@@ -128,20 +128,42 @@ public class CSCI3170 {
                     + "Expected_Salary integer NOT NULL CHECK (Expected_Salary > -1),"
                     + "Skills varchar(50)"
                     + "PRIMARY KEY (EMPLOYEE ID)"
-                    + ");");
+                    + ")");
             
             //Creating Company Table
             stm.executeUpdate("DROP TABLE IF EXISTS COMPANY");
             
             stm.executeUpdate("CREATE TABLE COMPANY"
-                    + "COMPANY varchar(30) NOT NULL,"
+                    + "(COMPANY varchar(30) NOT NULL,"
                     + "Size integer CHECK (Size > -1),"
                     + "Founded integer(4),"
                     + "PRIMARY KEY (COMAPNY)"
-                    + ");");
+                    + ")");
             
             //Create Employer Table
+            stm.executeUpdate ("DROP TABLE IF EXISTS EMPLOYER");
             
+            stm.executeUpdate("CREATE TABLE EMPLOYER"
+                    + "(EMPLOYER_ID varchar(6) NOT NULL,"
+                    + "NAME varchar(30) NOT NULL,"
+                    + "COMPANY varchar(30) NOT NULL,"
+                    + "PRIMARY KEY (EMPLOYER_ID),"
+                    + "FOREIGN KEY (COMPANY) REFERENCES COMPANY(COMPANY) ON DELETE CASCADE"
+                    + ")");
+            
+            //Create Position Table
+            stm.executeUpdate("DROP TABLE IF EXISTS POSTIONTABLE"); //Named it POSITIONTABLE because naming POSITION gave error
+            
+            stm.executeUpdate("CREATE TABLE POSITIONTABLE"
+                    + "(POSITION_ID varchar(6) NOT NULL"
+                    + "POSITION_TITLE varchar(30) NOT NULL,"
+                    + "SALARY integer CHECK (SALARY > -1),"
+                    + "EXPERIENCE integer CHECK (EXPERIENCE >-1),"
+                    + "STATUS boolean,"
+                    + "EMPLOYER_ID varchar(6) NOT NULL,"
+                    + "PRIMARY KEY (POSITION_ID),"
+                    + "FOREIGN KEY (EMPLOYER_ID) REFERENCES EMPLOYER(EMPLOYER_ID) ON DELETE CASCADE"
+                    + ")");
         }
         catch(SQLException e)
         {
