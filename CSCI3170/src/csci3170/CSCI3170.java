@@ -82,7 +82,7 @@ public class CSCI3170 {
         
         if(AdminChoice == 1)
         {
-           //createTables();
+           createTables();
             AdminMenu();
         }
         
@@ -118,52 +118,75 @@ public class CSCI3170 {
     public static void createTables() // Creates new table and deletes older tables
     {
         try{
-            // Creating Employee table
+            // Dropping Tables. Keep the same order of statements due to participation constraints
+            stm.executeUpdate("DROP TABLE IF EXISTS MARKED");
+            stm.executeUpdate("DROP TABLE IF EXISTS POSITIONTABLE");
+            stm.executeUpdate ("DROP TABLE IF EXISTS EMPLOYER");
+            stm.executeUpdate("DROP TABLE IF EXISTS COMPANY");
+            stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYMENT_HISTORY");
             stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYEES");
             
+            
+            //Creating Employees table
             stm.executeUpdate("CREATE TABLE EMPLOYEES"
                     + "(Employee_ID varchar(6) NOT NULL,"
                     + "Name varchar(30) NOT NULL,"
                     + "Experience integer NOT NULL CHECK (Experience > -1),"
                     + "Expected_Salary integer NOT NULL CHECK (Expected_Salary > -1),"
-                    + "Skills varchar(50)"
-                    + "PRIMARY KEY (EMPLOYEE ID)"
+                    + "Skills varchar(50),"
+                    + "PRIMARY KEY (EMPLOYEE_ID)"
                     + ")");
             
-            //Creating Company Table
-            stm.executeUpdate("DROP TABLE IF EXISTS COMPANY");
             
+            
+            //Creating Company Table
             stm.executeUpdate("CREATE TABLE COMPANY"
                     + "(COMPANY varchar(30) NOT NULL,"
                     + "Size integer CHECK (Size > -1),"
                     + "Founded integer(4),"
-                    + "PRIMARY KEY (COMAPNY)"
+                    + "PRIMARY KEY (COMPANY)"
                     + ")");
             
             //Create Employer Table
-            stm.executeUpdate ("DROP TABLE IF EXISTS EMPLOYER");
-            
             stm.executeUpdate("CREATE TABLE EMPLOYER"
                     + "(EMPLOYER_ID varchar(6) NOT NULL,"
                     + "NAME varchar(30) NOT NULL,"
                     + "COMPANY varchar(30) NOT NULL,"
                     + "PRIMARY KEY (EMPLOYER_ID),"
-                    + "FOREIGN KEY (COMPANY) REFERENCES COMPANY(COMPANY) ON DELETE CASCADE"
+                    + "CONSTRAINT fk_empr_cmp FOREIGN KEY (COMPANY) REFERENCES COMPANY(COMPANY) ON DELETE CASCADE"
                     + ")");
             
             //Create Position Table
-            stm.executeUpdate("DROP TABLE IF EXISTS POSTIONTABLE"); //Named it POSITIONTABLE because naming POSITION gave error
-            
+             //Named it POSITIONTABLE because naming POSITION gave error 
             stm.executeUpdate("CREATE TABLE POSITIONTABLE"
-                    + "(POSITION_ID varchar(6) NOT NULL"
+                    + "(POSITION_ID varchar(6) NOT NULL,"
                     + "POSITION_TITLE varchar(30) NOT NULL,"
                     + "SALARY integer CHECK (SALARY > -1),"
                     + "EXPERIENCE integer CHECK (EXPERIENCE >-1),"
                     + "STATUS boolean,"
                     + "EMPLOYER_ID varchar(6) NOT NULL,"
                     + "PRIMARY KEY (POSITION_ID),"
-                    + "FOREIGN KEY (EMPLOYER_ID) REFERENCES EMPLOYER(EMPLOYER_ID) ON DELETE CASCADE"
+                    + "CONSTRAINT fk_pos_empr FOREIGN KEY (EMPLOYER_ID) REFERENCES EMPLOYER(EMPLOYER_ID) ON DELETE CASCADE"
                     + ")");
+            
+            //Create Employment_History Table
+            stm.executeUpdate("CREATE TABLE EMPLOYMENT_HISTORY"
+                    + "(POSITION_ID varchar(6) NOT NULL,"
+                    + "EMPLOYEE_ID varchar(6) NOT NULL,"
+                    + "START DATE,"
+                    + "END DATE,"
+                    + "PRIMARY KEY(POSITION_ID),"
+                    + "CONSTRAINT fk_his_empe FOREIGN KEY (EMPLOYEE_ID) REFERENCES EMPLOYEES(EMPLOYEE_ID) ON DELETE CASCADE)");
+            
+            //Create Marked Table 
+            stm.executeUpdate("CREATE TABLE MARKED"
+                    + "(POSITION_ID varchar(6) NOT NULL,"
+                    + "EMPLOYEE_ID varchar(6) NOT NULL,"
+                    + "STATUS boolean,"
+                    + "PRIMARY KEY(POSITION_ID, EMPLOYEE_ID),"
+                    + "CONSTRAINT fk_mar_empe FOREIGN KEY(EMPLOYEE_ID) REFERENCES EMPLOYEES(EMPLOYEE_ID) ON DELETE CASCADE,"
+                    + "CONSTRAINT fk_mar_pos FOREIGN KEY(POSITION_ID) REFERENCES POSITIONTABLE(POSITION_ID) ON DELETE CASCADE)");
+                   
         }
         catch(SQLException e)
         {
@@ -182,8 +205,8 @@ public class CSCI3170 {
             con = DriverManager.getConnection(dbAddress, dbUsername, dbPassword);
             stm = con.createStatement();
             
-            System.out.println("Lolol");
-            //Add entry point for the program
+           MainMenu();
+            
                    
         }
         catch (ClassNotFoundException e){

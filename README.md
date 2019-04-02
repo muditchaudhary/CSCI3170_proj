@@ -15,4 +15,4 @@
 	create Table PositionTable(Position_ID varchar(6) not null, Position_Title varchar(30) not null, Salary int, Experience int, Status boolean, Employer_ID varchar(6) not null, Primary key (Position_ID), Foreign key (Employer_ID) references Employer(Employer_ID) on delete cascade); 
 
 ### Employment_History
-	
+	create Table Employment_History(Position_ID varchar(6) not null, Employee_ID varchar(6) not null, )
