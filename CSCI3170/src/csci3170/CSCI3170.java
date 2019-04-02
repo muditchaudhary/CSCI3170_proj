@@ -115,6 +115,40 @@ public class CSCI3170 {
         
     }
     
+    public static void createTables() // Creates new table and deletes older tables
+    {
+        try{
+            // Creating Employee table
+            stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYEES");
+            
+            stm.executeUpdate("CREATE TABLE EMPLOYEES"
+                    + "(Employee_ID varchar(6) NOT NULL,"
+                    + "Name varchar(30) NOT NULL,"
+                    + "Experience integer NOT NULL CHECK (Experience > -1),"
+                    + "Expected_Salary integer NOT NULL CHECK (Expected_Salary > -1),"
+                    + "Skills varchar(50)"
+                    + "PRIMARY KEY (EMPLOYEE ID)"
+                    + ");");
+            
+            //Creating Company Table
+            stm.executeUpdate("DROP TABLE IF EXISTS COMPANY");
+            
+            stm.executeUpdate("CREATE TABLE COMPANY"
+                    + "COMPANY varchar(30) NOT NULL,"
+                    + "Size integer CHECK (Size > -1),"
+                    + "Founded integer(4),"
+                    + "PRIMARY KEY (COMAPNY)"
+                    + ");");
+            
+            //Create Employer Table
+            
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+    }
+    
     public static void main(String[] args) {
         // TODO code application logic here
         String dbAddress =  "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db30";
