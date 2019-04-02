@@ -29,6 +29,92 @@ public class CSCI3170 {
     static PreparedStatement pstm;
     
     
+    public static void MainMenu()
+    {
+        System.out.println("Welcome! Who are you?");
+        System.out.println("1. An administator");
+        System.out.println("2. An employee");
+        System.out.println("3. An employer");
+        System.out.println("4. Exit");
+        System.out.println("Please enter [1-4]");
+        
+        userType = sc.nextInt();
+        
+        if(userType == 1)
+        {
+            //Adminstrator Menu
+            AdminMenu();
+        }
+        else if(userType == 2)
+        {
+            //Employee Menu
+        }
+        else if (userType == 3)
+        {
+            //Employer Menu
+        }
+        else if (userType == 4)
+        {
+            System.out.println("Exiting.");
+            System.exit(0);
+        }
+        else
+        {
+            System.out.println("[ERROR] Invalid Input");
+            MainMenu();
+                    
+        }
+        
+    }
+    
+    public static void AdminMenu()
+    {
+        System.out.println("Administrator, what would you like to do?");
+        System.out.println("1. Create tables");
+        System.out.println("2. Delete tables");
+        System.out.println("3. Load data");
+        System.out.println("4. Check data");
+        System.out.println("5. Go back");
+        System.out.println("Please enter [1-5].");
+        
+        int AdminChoice = sc.nextInt();
+        //sc.nextLine();
+        
+        if(AdminChoice == 1)
+        {
+           //createTables();
+            AdminMenu();
+        }
+        
+        else if (AdminChoice == 2)
+        {
+            //deleteTables();
+            AdminMenu();            
+        }
+        else if(AdminChoice == 3)
+        {
+            //loadData();
+            AdminMenu();
+        }
+        else if (AdminChoice == 4)
+        {
+            //checkData();
+            AdminMenu();
+        }
+        else if (AdminChoice == 5)
+        {
+            MainMenu();
+        }
+        else
+        {
+            System.out.println("[ERROR] Invalid Input");
+            AdminMenu();
+        }
+        
+        
+        
+    }
+    
     public static void main(String[] args) {
         // TODO code application logic here
         String dbAddress =  "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db30";
