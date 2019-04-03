@@ -98,7 +98,7 @@ public class CSCI3170 {
         }
         else if (AdminChoice == 4)
         {
-            //checkData();
+            checkTables();
             AdminMenu();
         }
         else if (AdminChoice == 5)
@@ -340,7 +340,28 @@ public class CSCI3170 {
     
     public static void checkTables()
     {
+        System.out.println("Number of records in each table: ");
         
+        try
+        {
+            DatabaseMetaData meta = con.getMetaData();
+            ResultSet result = meta.getTables(null, null, "%", null);
+            
+            while(result.next())
+            {
+                String TableName = result.getString(3);
+                ResultSet count = stm.executeQuery("SELECT COUNT(*) FROM "+ TableName);
+                while(count.next() && (TableName.equals("EMPLOYEES") || TableName.equals("EMPLOYER") || TableName.equals("EMPLOYMENT_HISTORY") || TableName.equals("POSITIONTABLE")|| TableName.equals("COMPANY") || TableName.equals("MARKED")) )
+                {
+                    System.out.println(TableName+":"+count.getInt(1));
+                }
+            }
+            
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e);
+        }
     }
     
     public static void main(String[] args) {
