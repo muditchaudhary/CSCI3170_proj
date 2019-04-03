@@ -48,6 +48,7 @@ public class CSCI3170 {
         else if(userType == 2)
         {
             //Employee Menu
+            EmployeeMenu();
         }
         else if (userType == 3)
         {
@@ -115,6 +116,93 @@ public class CSCI3170 {
         
     }
     
+    public static void EmployeeMenu()
+    {
+        System.out.println("Employee, what would you like to do?");
+        System.out.println("1. Show Available Positions");
+        System.out.println("2. Mark Interested Positions");
+        System.out.println("3. Check Average Working Time");
+        System.out.println("4. Go back");
+        System.out.println("Please enter [1-4].");
+        
+        int EChoice = sc.nextInt();
+        sc.nextLine();
+        
+        if(EChoice == 1)
+        {
+            showPositions();
+            EmployeeMenu();
+        }
+        
+        else if (EChoice == 2)
+        {
+            markPositions();
+            EmployeeMenu();            
+        }
+        else if(EChoice == 3)
+        {
+            checkAverage();
+            EmployeeMenu();
+        }
+
+        else if (EChoice == 4)
+        {
+            MainMenu();
+        }
+        else
+        {
+            System.out.println("[ERROR] Invalid Input");
+            EmployeeMenu();
+        }
+        
+        
+        
+    }
+    
+    public static void EmployerMenu()
+    {
+        System.out.println("Employer, what would you like to do?");
+        System.out.println("1. Post Position Recruitment");
+        System.out.println("2. Check employees and arrange an interview");
+        System.out.println("3. Accept an employee");
+        System.out.println("4. Go back");
+        System.out.println("Please enter [1-4].");
+        
+        int EChoice = sc.nextInt();
+        sc.nextLine();
+        
+        if(EChoice == 1)
+        {
+            postPosition();
+            EmployerMenu();
+        }
+        
+        else if (EChoice == 2)
+        {
+            checkAndInterview();
+            EmployerMenu();            
+        }
+        else if(EChoice == 3)
+        {
+            acceptEmployee();
+            EmployerMenu();
+        }
+
+        else if (EChoice == 4)
+        {
+            MainMenu();
+        }
+        else
+        {
+            System.out.println("[ERROR] Invalid Input");
+            EmployerMenu();
+        }
+        
+        
+        
+    }
+    
+    //Adminstrator functions
     public static void createTables() // Creates new table and deletes older tables
     {
         try{
@@ -364,6 +452,40 @@ public class CSCI3170 {
         }
     }
     
+    //Employee functions
+    public static void showPositions()
+    {
+        //Add code
+    }
+    
+    public static void markPositions()
+    {
+        //Add Code
+    }
+    
+    public static void checkAverage()
+    {
+        //Add code
+    }
+    
+    
+    //Employer functions
+    public static void postPosition()
+    {
+        //Add code
+    }
+    
+    public static void checkAndInterview()    
+    {
+        //Add code
+    }
+    
+    public static void acceptEmployee()
+    {
+        //Add code
+    }
+    
+    //Main function
     public static void main(String[] args) {
         // TODO code application logic here
         String dbAddress =  "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db30";
