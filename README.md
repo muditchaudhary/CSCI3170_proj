@@ -3,7 +3,10 @@
 ## Create Table commands 
 
 The create table commands can be viewed in:
+
+'''	
 	public static void createTables(){...};
+'''
 
 For testing the database on Windows I'd recommend to install WSL. The tutorial to install can be found here: https://docs.microsoft.com/en-us/windows/wsl/install-win10
 
