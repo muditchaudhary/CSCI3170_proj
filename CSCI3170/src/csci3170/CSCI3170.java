@@ -78,7 +78,7 @@ public class CSCI3170 {
         System.out.println("Please enter [1-5].");
         
         int AdminChoice = sc.nextInt();
-        //sc.nextLine();
+        sc.nextLine();
         
         if(AdminChoice == 1)
         {
@@ -88,12 +88,12 @@ public class CSCI3170 {
         
         else if (AdminChoice == 2)
         {
-            //deleteTables();
+            deleteTables();
             AdminMenu();            
         }
         else if(AdminChoice == 3)
         {
-            //loadData();
+            loadData();
             AdminMenu();
         }
         else if (AdminChoice == 4)
@@ -175,14 +175,14 @@ public class CSCI3170 {
                     + "COMPANY varchar(30) NOT NULL,"
                     + "POSITION_ID varchar(6) NOT NULL,"
                     + "START DATE,"
-                    + "END DATE,"
+                    + "END DATE NULL,"
                     + "PRIMARY KEY(POSITION_ID),"
                     + "CONSTRAINT fk_his_empe FOREIGN KEY (EMPLOYEE_ID) REFERENCES EMPLOYEES(EMPLOYEE_ID) ON DELETE CASCADE)");
             
             //Create Marked Table 
             stm.executeUpdate("CREATE TABLE MARKED"
                     +"(EMPLOYEE_ID varchar(6) NOT NULL,"
-                    + "(POSITION_ID varchar(6) NOT NULL," 
+                    + "POSITION_ID varchar(6) NOT NULL," 
                     + "STATUS boolean,"
                     + "PRIMARY KEY(POSITION_ID, EMPLOYEE_ID),"
                     + "CONSTRAINT fk_mar_empe FOREIGN KEY(EMPLOYEE_ID) REFERENCES EMPLOYEES(EMPLOYEE_ID) ON DELETE CASCADE,"
@@ -229,7 +229,10 @@ public class CSCI3170 {
                         catch(SQLException e)
                         {
                             System.out.println(e);
+                            System.out.println("EMPLOYEES error");
+                            
                         }
+                        
                         
                     }
                     else if(i==1)
@@ -244,6 +247,7 @@ public class CSCI3170 {
                         catch(SQLException e)
                         {
                             System.out.println(e);
+                            System.out.println("COMPANY error");
                         }
                     }
                     else if (i==2)
@@ -259,6 +263,7 @@ public class CSCI3170 {
                         catch(SQLException e)
                         {
                             System.out.println(e);
+                            System.out.println("EMPLOYER error");
                         }
                     }
                     else if(i==3)
@@ -267,13 +272,15 @@ public class CSCI3170 {
                         data[1] = "'"+data[1]+"'";
                         data[4] = "'"+data[4]+"'";
                         
+                        
                         try
                         {
-                            stm.executeUpdate("INSERT INTO POSITIONTABLE VALUES("+data[0]+","+ data[1]+","+data[2]+","+data[3]+","+data[4]+data[5]+")");
+                            stm.executeUpdate("INSERT INTO POSITIONTABLE VALUES("+data[0]+","+ data[1]+","+data[2]+","+data[3]+","+data[4]+","+data[5]+")");
                         }
                         catch(SQLException e)
                         {
                             System.out.println(e);
+                            System.out.println("Position error");
                         }
                     }
                     else if(i==4)
@@ -281,6 +288,17 @@ public class CSCI3170 {
                         data[0] = "'"+data[0]+"'";
                         data[1] = "'"+data[1]+"'";
                         data[2] = "'"+data[2]+"'";
+                        data[3] = "'"+data[3]+"'";
+                        if(data[4].equals("NULL"))
+                        {
+                            data[4]=data[4];
+                        }
+                        else
+                        {
+                            data[4] = "'"+data[4]+"'";
+                        }
+                        
+                        
                         
                         try
                         {
@@ -289,8 +307,10 @@ public class CSCI3170 {
                         catch(SQLException e)
                         {
                             System.out.println(e);
+                            System.out.println("EMPLOYEMENT_HISTORY error");
                         }
                     }
+                    
                 }
             }
             catch(IOException e)
@@ -300,6 +320,23 @@ public class CSCI3170 {
         }
     }
     
+    public static void deleteTables()
+    {
+        try
+        {
+            // Dropping Tables. Keep the same order of statements due to participation constraints
+            stm.executeUpdate("DROP TABLE IF EXISTS MARKED");
+            stm.executeUpdate("DROP TABLE IF EXISTS POSITIONTABLE");
+            stm.executeUpdate ("DROP TABLE IF EXISTS EMPLOYER");
+            stm.executeUpdate("DROP TABLE IF EXISTS COMPANY");
+            stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYMENT_HISTORY");
+            stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYEES");
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+    }
     public static void main(String[] args) {
         // TODO code application logic here
         String dbAddress =  "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db30";
