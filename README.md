@@ -13,7 +13,8 @@ For testing the database on Windows I'd recommend to install WSL. The tutorial t
 For testing on MacOS, you can use the terminal directly
 
 How to check the database on the sql server:
-```	1. Connect to CSE VPN.
+```	
+	1. Connect to CSE VPN.
 	2. Open Terminal (For MacOS). Open WSL terminal (For Windows).
 	3. Login into linux server using: ssh linux1.cse.cuhk.edu.hk -l CSE_UNIX_Username
 	4. Password is your CSE Unix password.
@@ -26,7 +27,8 @@ How to check the database on the sql server:
 To run the java program I used netbeans. I'm not sure how it will work with other IDE's. During submission I'll figure out how to give the code.
 
 How to run the Java Program:
-```	1. Connect to CSE VPN.
+```	
+	1. Connect to CSE VPN.
 	2. Open the project in NetBeans.
 	3. Build and Run.
 	4. For loading the data you need to enter the file path in the following format: M:\dbProject\CSCI3170_proj\CSCI3170\test_data\
