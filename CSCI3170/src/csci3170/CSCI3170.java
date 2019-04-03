@@ -337,6 +337,12 @@ public class CSCI3170 {
             System.out.println(e);
         }
     }
+    
+    public static void checkTables()
+    {
+        
+    }
+    
     public static void main(String[] args) {
         // TODO code application logic here
         String dbAddress =  "jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/db30";
