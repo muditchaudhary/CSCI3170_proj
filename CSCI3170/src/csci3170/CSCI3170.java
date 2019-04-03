@@ -131,8 +131,8 @@ public class CSCI3170 {
             stm.executeUpdate("CREATE TABLE EMPLOYEES"
                     + "(Employee_ID varchar(6) NOT NULL,"
                     + "Name varchar(30) NOT NULL,"
-                    + "Experience integer NOT NULL CHECK (Experience > -1),"
                     + "Expected_Salary integer NOT NULL CHECK (Expected_Salary > -1),"
+                    + "Experience integer NOT NULL CHECK (Experience > -1)," 
                     + "Skills varchar(50),"
                     + "PRIMARY KEY (EMPLOYEE_ID)"
                     + ")");
@@ -163,16 +163,17 @@ public class CSCI3170 {
                     + "POSITION_TITLE varchar(30) NOT NULL,"
                     + "SALARY integer CHECK (SALARY > -1),"
                     + "EXPERIENCE integer CHECK (EXPERIENCE >-1),"
-                    + "STATUS boolean,"
                     + "EMPLOYER_ID varchar(6) NOT NULL,"
+                    + "STATUS boolean,"
                     + "PRIMARY KEY (POSITION_ID),"
                     + "CONSTRAINT fk_pos_empr FOREIGN KEY (EMPLOYER_ID) REFERENCES EMPLOYER(EMPLOYER_ID) ON DELETE CASCADE"
                     + ")");
             
             //Create Employment_History Table
             stm.executeUpdate("CREATE TABLE EMPLOYMENT_HISTORY"
-                    + "(POSITION_ID varchar(6) NOT NULL,"
-                    + "EMPLOYEE_ID varchar(6) NOT NULL,"
+                    + "(EMPLOYEE_ID varchar(6) NOT NULL,"
+                    + "COMPANY varchar(30) NOT NULL,"
+                    + "POSITION_ID varchar(6) NOT NULL,"
                     + "START DATE,"
                     + "END DATE,"
                     + "PRIMARY KEY(POSITION_ID),"
@@ -180,8 +181,8 @@ public class CSCI3170 {
             
             //Create Marked Table 
             stm.executeUpdate("CREATE TABLE MARKED"
-                    + "(POSITION_ID varchar(6) NOT NULL,"
-                    + "EMPLOYEE_ID varchar(6) NOT NULL,"
+                    +"(EMPLOYEE_ID varchar(6) NOT NULL,"
+                    + "(POSITION_ID varchar(6) NOT NULL," 
                     + "STATUS boolean,"
                     + "PRIMARY KEY(POSITION_ID, EMPLOYEE_ID),"
                     + "CONSTRAINT fk_mar_empe FOREIGN KEY(EMPLOYEE_ID) REFERENCES EMPLOYEES(EMPLOYEE_ID) ON DELETE CASCADE,"
@@ -191,6 +192,111 @@ public class CSCI3170 {
         catch(SQLException e)
         {
             System.out.println(e);
+        }
+    }
+    
+    public static void loadData()
+    {
+        System.out.println("Please enter the folder path: ");
+        String Path = sc.nextLine();
+        
+        String files[] = {"employee.csv", "company.csv", "employer.csv" , "position.csv" , "history.csv"};
+                
+        for(int i = 0; i<=4;i++)
+        {
+            String FilePath = Path + files[i];
+            BufferedReader buffer = null;
+            
+            try
+            {
+                buffer = new BufferedReader(new FileReader(FilePath));
+                String line;
+                
+                while((line =buffer.readLine())!=null)
+                {
+                    String data[] = line.split(",");
+                    
+                    if(i==0)
+                    {
+                        data[0] = "'"+data[0]+"'";
+                        data[1] = "'"+data[1]+"'";
+                        data[4] = "'"+data[4]+"'";
+                        
+                        try
+                        {
+                            stm.executeUpdate("INSERT INTO EMPLOYEES VALUES("+data[0]+","+ data[1]+","+data[2]+","+data[3]+","+data[4]+")");
+                        }
+                        catch(SQLException e)
+                        {
+                            System.out.println(e);
+                        }
+                        
+                    }
+                    else if(i==1)
+                    {
+                        data[0] = "'"+data[0]+"'";
+              
+                        
+                        try
+                        {
+                            stm.executeUpdate("INSERT INTO COMPANY VALUES("+data[0]+","+ data[1]+","+data[2]+")");
+                        }
+                        catch(SQLException e)
+                        {
+                            System.out.println(e);
+                        }
+                    }
+                    else if (i==2)
+                    {
+                        data[0] = "'"+data[0]+"'";
+                        data[1] = "'"+data[1]+"'";
+                        data[2] = "'"+data[2]+"'";
+                        
+                        try
+                        {
+                            stm.executeUpdate("INSERT INTO EMPLOYER VALUES("+data[0]+","+ data[1]+","+data[2]+")");
+                        }
+                        catch(SQLException e)
+                        {
+                            System.out.println(e);
+                        }
+                    }
+                    else if(i==3)
+                    {
+                        data[0] = "'"+data[0]+"'";
+                        data[1] = "'"+data[1]+"'";
+                        data[4] = "'"+data[4]+"'";
+                        
+                        try
+                        {
+                            stm.executeUpdate("INSERT INTO POSITIONTABLE VALUES("+data[0]+","+ data[1]+","+data[2]+","+data[3]+","+data[4]+data[5]+")");
+                        }
+                        catch(SQLException e)
+                        {
+                            System.out.println(e);
+                        }
+                    }
+                    else if(i==4)
+                    {
+                        data[0] = "'"+data[0]+"'";
+                        data[1] = "'"+data[1]+"'";
+                        data[2] = "'"+data[2]+"'";
+                        
+                        try
+                        {
+                            stm.executeUpdate("INSERT INTO EMPLOYMENT_HISTORY VALUES("+data[0]+","+ data[1]+","+data[2]+","+data[3]+","+data[4]+")");
+                        }
+                        catch(SQLException e)
+                        {
+                            System.out.println(e);
+                        }
+                    }
+                }
+            }
+            catch(IOException e)
+            {
+                System.out.println(e);
+            }
         }
     }
     
