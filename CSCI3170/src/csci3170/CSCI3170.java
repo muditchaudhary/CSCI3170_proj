@@ -455,7 +455,33 @@ public class CSCI3170 {
     //Employee functions
     public static void showPositions()
     {
-        //Add code
+        System.out.println("Please enter your Employee ID.");
+        String Emp_ID = sc.nextLine();
+        
+        String query = "SELECT p.Position_ID,p.Position_Title,p.Salary, em.Company,c.Size,c.Founded From POSITIONTABLE p, EMPLOYER em,EMPLOYEES e, COMPANY c WHERE p.Employer_ID = em.Employer_ID AND em.Company = c.Company AND p.Status=True AND e.EMPLOYEE_ID=? AND e.skills LIKE CONCAT ('%',p.Position_Title,'%') AND p.Salary >= e.Expected_Salary AND e.Experience >= p.Experience;";
+        
+        try
+        {
+            pstm = con.prepareStatement(query);
+            pstm.setString(1, Emp_ID);
+            ResultSet result = pstm.executeQuery();
+            
+            System.out.println("Position_ID, Position_Title, Salary, Company, Size, Founded");
+            while(result.next())
+            {
+                System.out.print(result.getString(1)+", ");
+                System.out.print(result.getString(2)+", ");
+                System.out.print(result.getInt(3)+", ");
+                System.out.print(result.getString(4)+", ");
+                System.out.print(result.getInt(5)+", ");
+                System.out.println(result.getInt(6));
+            }
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+        
     }
     
     public static void markPositions()
