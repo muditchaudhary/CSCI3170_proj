@@ -354,7 +354,7 @@ public class CSCI3170 {
             while (result.next()) {
                 String TableName = result.getString(3);
                 ResultSet count = stm.executeQuery("SELECT COUNT(*) FROM " + TableName);
-                while (count.next() && (TableName.equals("EMPLOYEES") || TableName.equals("EMPLOYER") || TableName.equals("EMPLOYMENT_HISTORY") || TableName.equals("POSITIONTABLE") || TableName.equals("COMPANY") || TableName.equals("MARKED"))) {
+                while (count.next() && (TableName.equals("EMPLOYEES") || TableName.equals("EMPLOYER") || TableName.equals("EMPLOYMENT_HISTORY") || TableName.equals("POSITIONTABLE") || TableName.equals("COMPANY") || TableName.equals("MARKED") || TableName.equals("INTERVIEW"))) {
                     System.out.println(TableName + ":" + count.getInt(1));
                 }
             }
@@ -594,6 +594,54 @@ public class CSCI3170 {
                                                                                                                                                                                                              
     }
 
+    public static void successInterviewIndicator(String pos_id, String employee_id){
+
+        String quary = "SELECT e.Employee_ID, e.Name, e.Expected_Salary, e.Experience, e.Skills FROM MARKED m, EMPLOYEES e WHERE e.Employee_ID = m.EMPLOYEE_ID AND m.POSITION_ID =" + pos_id + " AND e.Employee_ID=" + employee_id;
+
+
+
+        try{
+            ResultSet result = stm.executeQuery(quary);
+            result.next();
+            System.out.println("\nThe interview was done with the following employee: \n");
+            System.out.println("Employee_ID, Name, Expected_Salary, Experience, Skills\n");
+            System.out.println(result.getString("Employee_ID") + ", " +
+                    result.getString("Name") + ", " +
+                    result.getString("Expected_Salary") + ", " +
+                    result.getString("Experience") + ", " +
+                    result.getString("Skills"));
+
+
+
+
+        }
+
+        catch(SQLException e){
+            System.out.println(e);
+        }
+
+    }
+
+    public static void successInterviewIndicator2(String employee_id, String pos_id) {
+
+       String quary3 = "SELECT i.EMPLOYEE_ID, i.EMPLOYER_ID, i.POSITION_ID FROM INTERVIEW i WHERE EMPLOYEE_ID = " + employee_id + " AND POSITION_ID = " + pos_id;
+
+
+        try {
+            ResultSet result3 = stm.executeQuery(quary3);
+            result3.next();
+            System.out.println("\nThis info was inserted in Interview table: \n");
+            System.out.println("EMPLOYEE_ID: " + result3.getString("EMPLOYEE_ID") +
+                    " EMPLOYER_ID: " + result3.getString("EMPLOYER_ID") +
+                    " POSITION_ID: " + result3.getString("POSITION_ID"));
+        }
+        catch(SQLException e){
+            System.out.println(e);
+        }
+
+
+    }
+
 
     public static void checkAndInterview() {
         //Add code
@@ -601,7 +649,6 @@ public class CSCI3170 {
         System.out.println("Please enter your ID.");
         String employer_id = sc.nextLine();
         employer_id = "'" + employer_id + "'";
-        checkPostedPositions(employer_id);
         Integer count = checkPostedPositions(employer_id);
         if (count > 0) {
             System.out.println("Please pick one position id.");
@@ -613,42 +660,23 @@ public class CSCI3170 {
                 System.out.println("Please pick one employee by employee id.");
                 String employee_id = sc.nextLine();
                 employee_id = "'" + employee_id + "'";
-                String quary = "SELECT e.Employee_ID, e.Name, e.Expected_Salary, e.Experience, e.Skills FROM MARKED m, EMPLOYEES e WHERE e.Employee_ID = m.EMPLOYEE_ID AND m.POSITION_ID =" + pos_id + " AND e.Employee_ID=" + employee_id;
 
                 try {
-                    ResultSet result = stm.executeQuery(quary);
+
                     String quary2 = "INSERT INTO INTERVIEW VALUES(" + employee_id + "," + employer_id + "," + pos_id + ")";
 
                     //quary3 is for testing only
-
-                    String quary3 = "SELECT i.EMPLOYEE_ID, I.EMPLOYER_ID, i.POSITION_ID FROM INTERVIEW i WHERE EMPLOYEE_ID = " + employee_id + " AND POSITION_ID = " + pos_id;
-                    try {
-                        stm.executeUpdate(quary2);
-                        result.next();
-                        System.out.println("The interview was done with the following employee: ");
-                        System.out.println("Employee_ID, Name, Expected_Salary, Experience, Skills");
-                        System.out.println(result.getString("Employee_ID") + ", " +
-                                result.getString("Name") + ", " +
-                                result.getString("Expected_Salary") + ", " +
-                                result.getString("Experience") + ", " +
-                                result.getString("Skills"));
-
-                        ResultSet result3 = stm.executeQuery(quary3);
-                        result3.next();
-                        System.out.println("This info was inserted in Interview table: ");
-                        System.out.println("EMPLOYEE_ID: " + result3.getString("EMPLOYEE_ID") +
-                                            " EMPLOYER_ID: " + result3.getString("EMPLOYER_ID") +
-                                            " POSITION_ID: " + result3.getString("POSITION_ID"));
-
-                    } catch (SQLException e) {
-                        System.out.println(e);
-                    }
+                    stm.executeUpdate(quary2);
 
                 }
 
                 catch(SQLException e){
                       System.out.println(e);
                 }
+                successInterviewIndicator(pos_id, employee_id);
+                successInterviewIndicator2(employee_id, pos_id);
+
+
             }
 
 //            "CREATE TABLE MARKED"
