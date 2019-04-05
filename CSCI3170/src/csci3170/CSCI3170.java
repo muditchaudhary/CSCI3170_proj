@@ -22,56 +22,45 @@ public class CSCI3170 {
     /**
      * @param args the command line arguments
      */
-    
+
     static int userType;
     static Scanner sc = new Scanner(System.in);
     static Connection con = null;
     static Statement stm;
     static PreparedStatement pstm;
-    
-    
-    public static void MainMenu()
-    {
+
+
+    public static void MainMenu() {
         System.out.println("Welcome! Who are you?");
         System.out.println("1. An administator");
         System.out.println("2. An employee");
         System.out.println("3. An employer");
         System.out.println("4. Exit");
         System.out.println("Please enter [1-4]");
-        
+
         userType = sc.nextInt();
-        
-        if(userType == 1)
-        {
+
+        if (userType == 1) {
             //Adminstrator Menu
             AdminMenu();
-        }
-        else if(userType == 2)
-        {
+        } else if (userType == 2) {
             //Employee Menu
             EmployeeMenu();
-        }
-        else if (userType == 3)
-        {
+        } else if (userType == 3) {
             //Employer Menu
             EmployerMenu();
-        }
-        else if (userType == 4)
-        {
+        } else if (userType == 4) {
             System.out.println("Exiting.");
             System.exit(0);
-        }
-        else
-        {
+        } else {
             System.out.println("[ERROR] Invalid Input");
             MainMenu();
-                    
+
         }
-        
+
     }
-    
-    public static void AdminMenu()
-    {
+
+    public static void AdminMenu() {
         System.out.println("Administrator, what would you like to do?");
         System.out.println("1. Create tables");
         System.out.println("2. Delete tables");
@@ -79,156 +68,116 @@ public class CSCI3170 {
         System.out.println("4. Check data");
         System.out.println("5. Go back");
         System.out.println("Please enter [1-5].");
-        
+
         int AdminChoice = sc.nextInt();
         sc.nextLine();
-        
-        if(AdminChoice == 1)
-        {
-           createTables();
+
+        if (AdminChoice == 1) {
+            createTables();
             AdminMenu();
-        }
-        
-        else if (AdminChoice == 2)
-        {
+        } else if (AdminChoice == 2) {
             deleteTables();
-            AdminMenu();            
-        }
-        else if(AdminChoice == 3)
-        {
+            AdminMenu();
+        } else if (AdminChoice == 3) {
             loadData();
             AdminMenu();
-        }
-        else if (AdminChoice == 4)
-        {
+        } else if (AdminChoice == 4) {
             checkTables();
             AdminMenu();
-        }
-        else if (AdminChoice == 5)
-        {
+        } else if (AdminChoice == 5) {
             MainMenu();
-        }
-        else
-        {
+        } else {
             System.out.println("[ERROR] Invalid Input");
             AdminMenu();
         }
-        
-        
-        
+
+
     }
-    
-    public static void EmployeeMenu()
-    {
+
+    public static void EmployeeMenu() {
         System.out.println("Employee, what would you like to do?");
         System.out.println("1. Show Available Positions");
         System.out.println("2. Mark Interested Positions");
         System.out.println("3. Check Average Working Time");
         System.out.println("4. Go back");
         System.out.println("Please enter [1-4].");
-        
+
         int EChoice = sc.nextInt();
         sc.nextLine();
-        
-        if(EChoice == 1)
-        {
+
+        if (EChoice == 1) {
             showPositions();
             EmployeeMenu();
-        }
-        
-        else if (EChoice == 2)
-        {
+        } else if (EChoice == 2) {
             markPositions();
-            EmployeeMenu();            
-        }
-        else if(EChoice == 3)
-        {
+            EmployeeMenu();
+        } else if (EChoice == 3) {
             checkAverage();
             EmployeeMenu();
-        }
-
-        else if (EChoice == 4)
-        {
+        } else if (EChoice == 4) {
             MainMenu();
-        }
-        else
-        {
+        } else {
             System.out.println("[ERROR] Invalid Input");
             EmployeeMenu();
         }
-        
-        
-        
+
+
     }
-    
-    public static void EmployerMenu()
-    {
+
+    public static void EmployerMenu() {
         System.out.println("Employer, what would you like to do?");
         System.out.println("1. Post Position Recruitment");
         System.out.println("2. Check employees and arrange an interview");
         System.out.println("3. Accept an employee");
         System.out.println("4. Go back");
         System.out.println("Please enter [1-4].");
-        
+
         int EChoice = sc.nextInt();
         sc.nextLine();
-        
-        if(EChoice == 1)
-        {
+
+        if (EChoice == 1) {
             postPosition();
             EmployerMenu();
-        }
-        
-        else if (EChoice == 2)
-        {
+        } else if (EChoice == 2) {
             checkAndInterview();
-            EmployerMenu();            
-        }
-        else if(EChoice == 3)
-        {
+            EmployerMenu();
+        } else if (EChoice == 3) {
             acceptEmployee();
             EmployerMenu();
-        }
-
-        else if (EChoice == 4)
-        {
+        } else if (EChoice == 4) {
             MainMenu();
-        }
-        else
-        {
+        } else {
             System.out.println("[ERROR] Invalid Input");
             EmployerMenu();
         }
-        
-        
-        
+
+
     }
-    
+
     //Adminstrator functions
     public static void createTables() // Creates new table and deletes older tables
     {
-        try{
+        try {
             // Dropping Tables. Keep the same order of statements due to participation constraints
             stm.executeUpdate("DROP TABLE IF EXISTS MARKED");
             stm.executeUpdate("DROP TABLE IF EXISTS POSITIONTABLE");
-            stm.executeUpdate ("DROP TABLE IF EXISTS EMPLOYER");
+            stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYER");
             stm.executeUpdate("DROP TABLE IF EXISTS COMPANY");
             stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYMENT_HISTORY");
             stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYEES");
-            
-            
+
+
             //Creating Employees table
             stm.executeUpdate("CREATE TABLE EMPLOYEES"
                     + "(Employee_ID varchar(6) NOT NULL,"
                     + "Name varchar(30) NOT NULL,"
                     + "Expected_Salary integer NOT NULL CHECK (Expected_Salary > -1),"
-                    + "Experience integer NOT NULL CHECK (Experience > -1)," 
+                    + "Experience integer NOT NULL CHECK (Experience > -1),"
                     + "Skills varchar(50),"
                     + "PRIMARY KEY (EMPLOYEE_ID)"
                     + ")");
-            
-            
-            
+
+
             //Creating Company Table
             stm.executeUpdate("CREATE TABLE COMPANY"
                     + "(COMPANY varchar(30) NOT NULL,"
@@ -236,7 +185,7 @@ public class CSCI3170 {
                     + "Founded integer(4),"
                     + "PRIMARY KEY (COMPANY)"
                     + ")");
-            
+
             //Create Employer Table
             stm.executeUpdate("CREATE TABLE EMPLOYER"
                     + "(EMPLOYER_ID varchar(6) NOT NULL,"
@@ -244,9 +193,9 @@ public class CSCI3170 {
                     + "COMPANY varchar(30) NOT NULL,"
                     + "PRIMARY KEY (EMPLOYER_ID)"
                     + ")");
-            
+
             //Create Position Table
-             //Named it POSITIONTABLE because naming POSITION gave error 
+            //Named it POSITIONTABLE because naming POSITION gave error
             stm.executeUpdate("CREATE TABLE POSITIONTABLE"
                     + "(POSITION_ID varchar(6) NOT NULL,"
                     + "POSITION_TITLE varchar(30) NOT NULL,"
@@ -256,7 +205,7 @@ public class CSCI3170 {
                     + "STATUS boolean,"
                     + "PRIMARY KEY (POSITION_ID)"
                     + ")");
-            
+
             //Create Employment_History Table
             stm.executeUpdate("CREATE TABLE EMPLOYMENT_HISTORY"
                     + "(EMPLOYEE_ID varchar(6) NOT NULL,"
@@ -266,294 +215,231 @@ public class CSCI3170 {
                     + "END DATE NULL,"
                     + "PRIMARY KEY(POSITION_ID))"
             );
-            
+
             //Create Marked Table 
             stm.executeUpdate("CREATE TABLE MARKED"
-                    +"( POSITION_ID varchar(6) NOT NULL,"
+                    + "( POSITION_ID varchar(6) NOT NULL,"
                     + "EMPLOYEE_ID varchar(6) NOT NULL,"
                     + "STATUS boolean,"
                     + "PRIMARY KEY(POSITION_ID, EMPLOYEE_ID))"
-                    );
-                   
-        }
-        catch(SQLException e)
-        {
+            );
+
+        } catch (SQLException e) {
             System.out.println(e);
         }
     }
-    
-    public static void loadData()
-    {
+
+    public static void loadData() {
         System.out.println("Please enter the folder path: ");
         String Path = sc.nextLine();
-        
-        String files[] = {"employee.csv", "company.csv", "employer.csv" , "position.csv" , "history.csv"};
-                
-        for(int i = 0; i<=4;i++)
-        {
+
+        String files[] = {"employee.csv", "company.csv", "employer.csv", "position.csv", "history.csv"};
+
+        for (int i = 0; i <= 4; i++) {
             String FilePath = Path + files[i];
             BufferedReader buffer = null;
-            
-            try
-            {
+
+            try {
                 buffer = new BufferedReader(new FileReader(FilePath));
                 String line;
-                
-                while((line =buffer.readLine())!=null)
-                {
+
+                while ((line = buffer.readLine()) != null) {
                     String data[] = line.split(",");
-                    
-                    if(i==0)
-                    {
-                        data[0] = "'"+data[0]+"'";
-                        data[1] = "'"+data[1]+"'";
-                        data[4] = "'"+data[4]+"'";
-                        
-                        try
-                        {
-                            stm.executeUpdate("INSERT INTO EMPLOYEES VALUES("+data[0]+","+ data[1]+","+data[2]+","+data[3]+","+data[4]+")");
-                        }
-                        catch(SQLException e)
-                        {
+
+                    if (i == 0) {
+                        data[0] = "'" + data[0] + "'";
+                        data[1] = "'" + data[1] + "'";
+                        data[4] = "'" + data[4] + "'";
+
+                        try {
+                            stm.executeUpdate("INSERT INTO EMPLOYEES VALUES(" + data[0] + "," + data[1] + "," + data[2] + "," + data[3] + "," + data[4] + ")");
+                        } catch (SQLException e) {
                             System.out.println(e);
                             System.out.println("EMPLOYEES error");
-                            
+
                         }
-                        
-                        
-                    }
-                    else if(i==1)
-                    {
-                        data[0] = "'"+data[0]+"'";
-              
-                        
-                        try
-                        {
-                            stm.executeUpdate("INSERT INTO COMPANY VALUES("+data[0]+","+ data[1]+","+data[2]+")");
-                        }
-                        catch(SQLException e)
-                        {
+
+
+                    } else if (i == 1) {
+                        data[0] = "'" + data[0] + "'";
+
+
+                        try {
+                            stm.executeUpdate("INSERT INTO COMPANY VALUES(" + data[0] + "," + data[1] + "," + data[2] + ")");
+                        } catch (SQLException e) {
                             System.out.println(e);
                             System.out.println("COMPANY error");
                         }
-                    }
-                    else if (i==2)
-                    {
-                        data[0] = "'"+data[0]+"'";
-                        data[1] = "'"+data[1]+"'";
-                        data[2] = "'"+data[2]+"'";
-                        
-                        try
-                        {
-                            stm.executeUpdate("INSERT INTO EMPLOYER VALUES("+data[0]+","+ data[1]+","+data[2]+")");
-                        }
-                        catch(SQLException e)
-                        {
+                    } else if (i == 2) {
+                        data[0] = "'" + data[0] + "'";
+                        data[1] = "'" + data[1] + "'";
+                        data[2] = "'" + data[2] + "'";
+
+                        try {
+                            stm.executeUpdate("INSERT INTO EMPLOYER VALUES(" + data[0] + "," + data[1] + "," + data[2] + ")");
+                        } catch (SQLException e) {
                             System.out.println(e);
                             System.out.println("EMPLOYER error");
                         }
-                    }
-                    else if(i==3)
-                    {
-                        data[0] = "'"+data[0]+"'";
-                        data[1] = "'"+data[1]+"'";
-                        data[4] = "'"+data[4]+"'";
-                        
-                        
-                        try
-                        {
-                            stm.executeUpdate("INSERT INTO POSITIONTABLE VALUES("+data[0]+","+ data[1]+","+data[2]+","+data[3]+","+data[4]+","+data[5]+")");
-                        }
-                        catch(SQLException e)
-                        {
+                    } else if (i == 3) {
+                        data[0] = "'" + data[0] + "'";
+                        data[1] = "'" + data[1] + "'";
+                        data[4] = "'" + data[4] + "'";
+
+
+                        try {
+                            stm.executeUpdate("INSERT INTO POSITIONTABLE VALUES(" + data[0] + "," + data[1] + "," + data[2] + "," + data[3] + "," + data[4] + "," + data[5] + ")");
+                        } catch (SQLException e) {
                             System.out.println(e);
                             System.out.println("Position error");
                         }
-                    }
-                    else if(i==4)
-                    {
-                        data[0] = "'"+data[0]+"'";
-                        data[1] = "'"+data[1]+"'";
-                        data[2] = "'"+data[2]+"'";
-                        data[3] = "'"+data[3]+"'";
-                        if(data[4].equals("NULL"))
-                        {
-                            data[4]=data[4];
+                    } else if (i == 4) {
+                        data[0] = "'" + data[0] + "'";
+                        data[1] = "'" + data[1] + "'";
+                        data[2] = "'" + data[2] + "'";
+                        data[3] = "'" + data[3] + "'";
+                        if (data[4].equals("NULL")) {
+                            data[4] = data[4];
+                        } else {
+                            data[4] = "'" + data[4] + "'";
                         }
-                        else
-                        {
-                            data[4] = "'"+data[4]+"'";
-                        }
-                        
-                        
-                        
-                        try
-                        {
-                            stm.executeUpdate("INSERT INTO EMPLOYMENT_HISTORY VALUES("+data[0]+","+ data[1]+","+data[2]+","+data[3]+","+data[4]+")");
-                        }
-                        catch(SQLException e)
-                        {
+
+
+                        try {
+                            stm.executeUpdate("INSERT INTO EMPLOYMENT_HISTORY VALUES(" + data[0] + "," + data[1] + "," + data[2] + "," + data[3] + "," + data[4] + ")");
+                        } catch (SQLException e) {
                             System.out.println(e);
                             System.out.println("EMPLOYEMENT_HISTORY error");
                         }
                     }
-                    
+
                 }
-            }
-            catch(IOException e)
-            {
+            } catch (IOException e) {
                 System.out.println(e);
             }
         }
     }
-    
-    public static void deleteTables()
-    {
-        try
-        {
+
+    public static void deleteTables() {
+        try {
             // Dropping Tables. Keep the same order of statements due to participation constraints
             stm.executeUpdate("DROP TABLE IF EXISTS MARKED");
             stm.executeUpdate("DROP TABLE IF EXISTS POSITIONTABLE");
-            stm.executeUpdate ("DROP TABLE IF EXISTS EMPLOYER");
+            stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYER");
             stm.executeUpdate("DROP TABLE IF EXISTS COMPANY");
             stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYMENT_HISTORY");
             stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYEES");
-        }
-        catch(SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println(e);
         }
     }
-    
-    public static void checkTables()
-    {
+
+    public static void checkTables() {
         System.out.println("Number of records in each table: ");
-        
-        try
-        {
+
+        try {
             DatabaseMetaData meta = con.getMetaData();
             ResultSet result = meta.getTables(null, null, "%", null);
-            
-            while(result.next())
-            {
+
+            while (result.next()) {
                 String TableName = result.getString(3);
-                ResultSet count = stm.executeQuery("SELECT COUNT(*) FROM "+ TableName);
-                while(count.next() && (TableName.equals("EMPLOYEES") || TableName.equals("EMPLOYER") || TableName.equals("EMPLOYMENT_HISTORY") || TableName.equals("POSITIONTABLE")|| TableName.equals("COMPANY") || TableName.equals("MARKED")) )
-                {
-                    System.out.println(TableName+":"+count.getInt(1));
+                ResultSet count = stm.executeQuery("SELECT COUNT(*) FROM " + TableName);
+                while (count.next() && (TableName.equals("EMPLOYEES") || TableName.equals("EMPLOYER") || TableName.equals("EMPLOYMENT_HISTORY") || TableName.equals("POSITIONTABLE") || TableName.equals("COMPANY") || TableName.equals("MARKED"))) {
+                    System.out.println(TableName + ":" + count.getInt(1));
                 }
             }
-            
-        }
-        catch(SQLException e)
-        {
+
+        } catch (SQLException e) {
             System.out.println(e);
         }
     }
-    
+
     //Employee functions
-    public static void showPositions()
-    {
+    public static void showPositions() {
         System.out.println("Please enter your Employee ID.");
         String Emp_ID = sc.nextLine();
-        
+
         System.out.println("Your available positions are: ");
         String query = "SELECT p.Position_ID,p.Position_Title,p.Salary, em.Company,c.Size,c.Founded From POSITIONTABLE p, EMPLOYER em,EMPLOYEES e, COMPANY c WHERE p.Employer_ID = em.Employer_ID AND em.Company = c.Company AND p.Status=True AND e.EMPLOYEE_ID=? AND e.skills LIKE CONCAT ('%',p.Position_Title,'%') AND p.Salary >= e.Expected_Salary AND e.Experience >= p.Experience;";
-        
-        try
-        {
+
+        try {
             pstm = con.prepareStatement(query);
             pstm.setString(1, Emp_ID);
             ResultSet result = pstm.executeQuery();
-            
+
             System.out.println("Position_ID, Position_Title, Salary, Company, Size, Founded");
-            while(result.next())
-            {
-                System.out.print(result.getString(1)+", ");
-                System.out.print(result.getString(2)+", ");
-                System.out.print(result.getInt(3)+", ");
-                System.out.print(result.getString(4)+", ");
-                System.out.print(result.getInt(5)+", ");
+            while (result.next()) {
+                System.out.print(result.getString(1) + ", ");
+                System.out.print(result.getString(2) + ", ");
+                System.out.print(result.getInt(3) + ", ");
+                System.out.print(result.getString(4) + ", ");
+                System.out.print(result.getInt(5) + ", ");
                 System.out.println(result.getInt(6));
             }
-        }
-        catch(SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println(e);
         }
-        
+
     }
-    
-    public static void markPositions()
-    {
+
+    public static void markPositions() {
         ArrayList<String> validList = new ArrayList<>();
         System.out.println("Please enter your Employee ID.");
         String Emp_ID = sc.nextLine();
-        
+
         System.out.println("Your interested positions are: ");
         String query = "SELECT DISTINCT p.Position_ID,p.Position_Title,p.Salary, em.Company,c.Size,c.Founded From POSITIONTABLE p, EMPLOYER em,EMPLOYEES e, COMPANY c, EMPLOYMENT_HISTORY eh, MARKED m WHERE p.Employer_ID = em.Employer_ID AND em.Company = c.Company AND p.Status=True AND e.EMPLOYEE_ID=? AND e.skills LIKE CONCAT ('%',p.Position_Title,'%') AND p.Salary >= e.Expected_Salary AND e.Experience >= p.Experience AND  NOT EXISTS (SELECT * FROM POSITIONTABLE p2, MARKED m2 WHERE p.Position_ID = p2.Position_ID AND p2.Position_ID = m2.Position_ID and m.Employee_ID = ?) AND em.Company NOT IN (SELECT eh2.Company FROM EMPLOYMENT_HISTORY eh2 WHERE eh2.Employee_ID = ?);";
-        
-        try
-        {
+
+        try {
             pstm = con.prepareStatement(query);
             pstm.setString(1, Emp_ID);
             pstm.setString(2, Emp_ID);
             pstm.setString(3, Emp_ID);
             ResultSet result = pstm.executeQuery();
-            
+
             System.out.println("Position_ID, Position_Title, Salary, Company, Size, Founded");
-            while(result.next())
-            {
+            while (result.next()) {
                 validList.add(result.getString(1));
-                System.out.print(result.getString(1)+", ");
-                System.out.print(result.getString(2)+", ");
-                System.out.print(result.getInt(3)+", ");
-                System.out.print(result.getString(4)+", ");
-                System.out.print(result.getInt(5)+", ");
+                System.out.print(result.getString(1) + ", ");
+                System.out.print(result.getString(2) + ", ");
+                System.out.print(result.getInt(3) + ", ");
+                System.out.print(result.getString(4) + ", ");
+                System.out.print(result.getInt(5) + ", ");
                 System.out.println(result.getInt(6));
             }
-        }
-        catch(SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println(e);
         }
-        
-        
+
+
         System.out.println("Please enter one interested Position_ID.");
         String Pos_ID = sc.nextLine();
-        
-        if(validList.contains(Pos_ID))
-        {
-            try
-            {
+
+        if (validList.contains(Pos_ID)) {
+            try {
                 String query2 = "INSERT INTO MARKED VALUES (?,?,FALSE)";
                 pstm = con.prepareStatement(query2);
                 pstm.setString(1, Pos_ID);
                 pstm.setString(2, Emp_ID);
                 pstm.executeUpdate();
-                
-            }
-            catch(SQLException e)
-            {
+
+            } catch (SQLException e) {
                 System.out.println(e);
             }
-            
+
             System.out.println("Done!");
-            
-        }
-        else
-        {
+
+        } else {
             System.out.println("Invalid Input. You cannot mark this position");
             EmployeeMenu();
         }
     }
-    
-    public static void checkAverage()
-    {
+
+    public static void checkAverage() {
         //Add code
     }
-    
-    
+
+
     //Employer functions
 
 //    Generate a random alpha numeric string whose length is the number of characters specified.
@@ -561,22 +447,18 @@ public class CSCI3170 {
 //    Count is the length of random string to create.
 
     private static final String ALPHA_NUMERIC_STRING = "abcdefghijklmnopqrstuvwxyz0123456789";
+
     public static String randomAlphaNumeric(int count) {
-    StringBuilder builder = new StringBuilder();
-    while (count-- != 0) {
-    int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
-    builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+        StringBuilder builder = new StringBuilder();
+        while (count-- != 0) {
+            int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
+            builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+        }
+        return builder.toString();
     }
-    return builder.toString();
-    }
 
 
-
-
-
-
-    public static void postPosition()
-    {
+    public static void postPosition() {
         //Add code
         System.out.println("Please enter your ID.");
         String employer_id = sc.nextLine();
@@ -592,10 +474,9 @@ public class CSCI3170 {
         pos_id = "'" + pos_id + "'";
         Boolean status = true;
 
-        String query = "INSERT INTO POSITIONTABLE VALUES("+pos_id+","+ pos_title+","+salary+","+experience+","+employer_id+","+status+")";
+        String query = "INSERT INTO POSITIONTABLE VALUES(" + pos_id + "," + pos_title + "," + salary + "," + experience + "," + employer_id + "," + status + ")";
         String quary2 = "SELECT p.POSITION_ID, p.POSITION_TITLE, p.SALARY, p.EXPERIENCE, p.EMPLOYER_ID, p.STATUS FROM POSITIONTABLE p WHERE p.POSITION_ID = " + pos_id + " AND p.EMPLOYER_ID = " + employer_id;
-        try
-        {
+        try {
 
 //"CREATE TABLE POSITIONTABLE"
 //                    + "(POSITION_ID varchar(6) NOT NULL,"
@@ -614,44 +495,95 @@ public class CSCI3170 {
             result.next();
 
             System.out.println("Position added with position ID: " + result.getString("POSITION_ID") +
-                                                    " position title: " + result.getString("POSITION_TITLE") +
-                                                    " upper_salary: " + result.getInt("SALARY") +
-                                                    " experience " + result.getInt("EXPERIENCE") +
-                                                    " status: " + result.getBoolean("STATUS"));
+                    " position title: " + result.getString("POSITION_TITLE") +
+                    " upper_salary: " + result.getInt("SALARY") +
+                    " experience " + result.getInt("EXPERIENCE") +
+                    " status: " + result.getBoolean("STATUS"));
 
-        }
-        catch(SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println(e);
         }
     }
 
     //This function is for printing the IDs of the positions posted by some employer. It takes the employer_id as an input.
     //Note that employer_id should be in SQL readable format
-    public static void checkPostedPositions( String employer_id) {
+    public static Integer checkPostedPositions(String employer_id) {
         String quary1 = "SELECT p.POSITION_ID FROM POSITIONTABLE p WHERE p.EMPLOYER_ID =" + employer_id;
+        Integer count = 0;
         try {
             ResultSet result1 = stm.executeQuery(quary1);
             System.out.println("The IDs of positions posted by you are:");
             while (result1.next()) {
                 System.out.println(result1.getString("POSITION_ID"));
+                count = count + 1;
             }
         } catch (SQLException e) {
             System.out.println(e);
         }
+        return count;
     }
 
-    public static void checkAndInterview()
-    {
+    //This function prints the IDs of employees who are interested in the particular position. It takes pos_id as an input
+    public static Integer checkInterestedEmployees(String pos_id){
+
+            String quary = "SELECT e.Employee_ID, e.Name, e.Expected_Salary, e.Experience, e.Skills FROM MARKED m, EMPLOYEES e WHERE e.Employee_ID = m.EMPLOYEE_ID AND m.POSITION_ID =" + pos_id;
+            Integer count = 0;
+            try {
+                ResultSet result1 = stm.executeQuery(quary);
+                System.out.println("The employees who marked interested in this position reqruitement are: ");
+                System.out.println("Employee_ID, Name, Expected_Salary, Experience, Skills");
+                while (result1.next()) {
+                    System.out.println(result1.getString("Employee_ID") + ", " +
+                                       result1.getString("Name") + ", " +
+                                        result1.getString("Expected_Salary") + ", " +
+                                        result1.getString("Experience") + ", " +
+                                        result1.getString("Skills"));
+                    count = count + 1;
+                }
+            } catch (SQLException e) {
+
+                System.out.println(e);
+            }
+
+            return count;
+                                                                                                                                                                                                             
+    }
+
+
+    public static void checkAndInterview() {
         //Add code
 
         System.out.println("Please enter your ID.");
         String employer_id = sc.nextLine();
         employer_id = "'" + employer_id + "'";
         checkPostedPositions(employer_id);
-        //d3dda86afdf59e892805ce10567a594b24148e98
+        Integer count = checkPostedPositions(employer_id);
+        if (count > 0) {
+            System.out.println("Please pick one position id.");
+            String pos_id = sc.nextLine();
+            pos_id = "'" + pos_id + "'";
+            checkInterestedEmployees(pos_id);
+
+//            "CREATE TABLE MARKED"
+//                                +"( POSITION_ID varchar(6) NOT NULL,"
+//                                + "EMPLOYEE_ID varchar(6) NOT NULL,"
+//                                + "STATUS boolean,"
+//                                + "PRIMARY KEY(POSITION_ID, EMPLOYEE_ID))"
+//           "CREATE TABLE EMPLOYEES"
+//                               + "(Employee_ID varchar(6) NOT NULL,"
+//                               + "Name varchar(30) NOT NULL,"
+//                               + "Expected_Salary integer NOT NULL CHECK (Expected_Salary > -1),"
+//                               + "Experience integer NOT NULL CHECK (Experience > -1),"
+//                               + "Skills varchar(50),"
+//                               + "PRIMARY KEY (EMPLOYEE_ID)"
+//                               + ")"
+
+
+        }
+
     }
-    
+
+
     public static void acceptEmployee()
     {
         //Add code
