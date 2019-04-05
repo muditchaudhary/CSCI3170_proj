@@ -649,7 +649,7 @@ public class CSCI3170 {
         String employer_id = sc.nextLine();
         employer_id = "'" + employer_id + "'";
         checkPostedPositions(employer_id);
-        d3dda86afdf59e892805ce10567a594b24148e98
+        //d3dda86afdf59e892805ce10567a594b24148e98
     }
     
     public static void acceptEmployee()
