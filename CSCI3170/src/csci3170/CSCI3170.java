@@ -388,7 +388,7 @@ public class CSCI3170 {
         String Emp_ID = sc.nextLine();
 
         System.out.println("Your interested positions are: ");
-        String query = "SELECT DISTINCT p.Position_ID,p.Position_Title,p.Salary, em.Company,c.Size,c.Founded From POSITIONTABLE p, EMPLOYER em,EMPLOYEES e, COMPANY c, EMPLOYMENT_HISTORY eh, MARKED m WHERE p.Employer_ID = em.Employer_ID AND em.Company = c.Company AND p.Status=True AND e.EMPLOYEE_ID=? AND e.skills LIKE CONCAT ('%',p.Position_Title,'%') AND p.Salary >= e.Expected_Salary AND e.Experience >= p.Experience AND  NOT EXISTS (SELECT * FROM POSITIONTABLE p2, MARKED m2 WHERE p.Position_ID = p2.Position_ID AND p2.Position_ID = m2.Position_ID and m.Employee_ID = ?) AND em.Company NOT IN (SELECT eh2.Company FROM EMPLOYMENT_HISTORY eh2 WHERE eh2.Employee_ID = ?);";
+        String query = "SELECT DISTINCT p.Position_ID,p.Position_Title,p.Salary, em.Company,c.Size,c.Founded From POSITIONTABLE p, EMPLOYER em,EMPLOYEES e, COMPANY c, EMPLOYMENT_HISTORY eh WHERE p.Employer_ID = em.Employer_ID AND em.Company = c.Company AND p.Status=True AND e.EMPLOYEE_ID=? AND e.skills LIKE CONCAT ('%',p.Position_Title,'%') AND p.Salary >= e.Expected_Salary AND e.Experience >= p.Experience AND NOT EXISTS (SELECT * FROM POSITIONTABLE p2, MARKED m2 WHERE p.Position_ID = p2.Position_ID AND p2.Position_ID = m2.Position_ID and m2.Employee_ID = ?) AND em.Company NOT IN (SELECT eh2.Company FROM EMPLOYMENT_HISTORY eh2 WHERE eh2.Employee_ID = ?);";
 
         try {
             pstm = con.prepareStatement(query);
