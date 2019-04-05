@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.OffsetTime;
 import static java.time.OffsetTime.now;
+import java.util.ArrayList;
 /**
  *
  * @author mudit
@@ -53,6 +54,7 @@ public class CSCI3170 {
         else if (userType == 3)
         {
             //Employer Menu
+            EmployerMenu();
         }
         else if (userType == 4)
         {
@@ -240,8 +242,7 @@ public class CSCI3170 {
                     + "(EMPLOYER_ID varchar(6) NOT NULL,"
                     + "NAME varchar(30) NOT NULL,"
                     + "COMPANY varchar(30) NOT NULL,"
-                    + "PRIMARY KEY (EMPLOYER_ID),"
-                    + "CONSTRAINT fk_empr_cmp FOREIGN KEY (COMPANY) REFERENCES COMPANY(COMPANY) ON DELETE CASCADE"
+                    + "PRIMARY KEY (EMPLOYER_ID)"
                     + ")");
             
             //Create Position Table
@@ -253,8 +254,7 @@ public class CSCI3170 {
                     + "EXPERIENCE integer CHECK (EXPERIENCE >-1),"
                     + "EMPLOYER_ID varchar(6) NOT NULL,"
                     + "STATUS boolean,"
-                    + "PRIMARY KEY (POSITION_ID),"
-                    + "CONSTRAINT fk_pos_empr FOREIGN KEY (EMPLOYER_ID) REFERENCES EMPLOYER(EMPLOYER_ID) ON DELETE CASCADE"
+                    + "PRIMARY KEY (POSITION_ID)"
                     + ")");
             
             //Create Employment_History Table
@@ -264,17 +264,16 @@ public class CSCI3170 {
                     + "POSITION_ID varchar(6) NOT NULL,"
                     + "START DATE,"
                     + "END DATE NULL,"
-                    + "PRIMARY KEY(POSITION_ID),"
-                    + "CONSTRAINT fk_his_empe FOREIGN KEY (EMPLOYEE_ID) REFERENCES EMPLOYEES(EMPLOYEE_ID) ON DELETE CASCADE)");
+                    + "PRIMARY KEY(POSITION_ID))"
+            );
             
             //Create Marked Table 
             stm.executeUpdate("CREATE TABLE MARKED"
-                    +"(EMPLOYEE_ID varchar(6) NOT NULL,"
-                    + "POSITION_ID varchar(6) NOT NULL," 
+                    +"( POSITION_ID varchar(6) NOT NULL,"
+                    + "EMPLOYEE_ID varchar(6) NOT NULL,"
                     + "STATUS boolean,"
-                    + "PRIMARY KEY(POSITION_ID, EMPLOYEE_ID),"
-                    + "CONSTRAINT fk_mar_empe FOREIGN KEY(EMPLOYEE_ID) REFERENCES EMPLOYEES(EMPLOYEE_ID) ON DELETE CASCADE,"
-                    + "CONSTRAINT fk_mar_pos FOREIGN KEY(POSITION_ID) REFERENCES POSITIONTABLE(POSITION_ID) ON DELETE CASCADE)");
+                    + "PRIMARY KEY(POSITION_ID, EMPLOYEE_ID))"
+                    );
                    
         }
         catch(SQLException e)
@@ -458,6 +457,7 @@ public class CSCI3170 {
         System.out.println("Please enter your Employee ID.");
         String Emp_ID = sc.nextLine();
         
+        System.out.println("Your available positions are: ");
         String query = "SELECT p.Position_ID,p.Position_Title,p.Salary, em.Company,c.Size,c.Founded From POSITIONTABLE p, EMPLOYER em,EMPLOYEES e, COMPANY c WHERE p.Employer_ID = em.Employer_ID AND em.Company = c.Company AND p.Status=True AND e.EMPLOYEE_ID=? AND e.skills LIKE CONCAT ('%',p.Position_Title,'%') AND p.Salary >= e.Expected_Salary AND e.Experience >= p.Experience;";
         
         try
@@ -486,7 +486,66 @@ public class CSCI3170 {
     
     public static void markPositions()
     {
-        //Add Code
+        ArrayList<String> validList = new ArrayList<>();
+        System.out.println("Please enter your Employee ID.");
+        String Emp_ID = sc.nextLine();
+        
+        System.out.println("Your interested positions are: ");
+        String query = "SELECT DISTINCT p.Position_ID,p.Position_Title,p.Salary, em.Company,c.Size,c.Founded From POSITIONTABLE p, EMPLOYER em,EMPLOYEES e, COMPANY c, EMPLOYMENT_HISTORY eh, MARKED m WHERE p.Employer_ID = em.Employer_ID AND em.Company = c.Company AND p.Status=True AND e.EMPLOYEE_ID=? AND e.skills LIKE CONCAT ('%',p.Position_Title,'%') AND p.Salary >= e.Expected_Salary AND e.Experience >= p.Experience AND  NOT EXISTS (SELECT * FROM POSITIONTABLE p2, MARKED m2 WHERE p.Position_ID = p2.Position_ID AND p2.Position_ID = m2.Position_ID and m.Employee_ID = ?) AND em.Company NOT IN (SELECT eh2.Company FROM EMPLOYMENT_HISTORY eh2 WHERE eh2.Employee_ID = ?);";
+        
+        try
+        {
+            pstm = con.prepareStatement(query);
+            pstm.setString(1, Emp_ID);
+            pstm.setString(2, Emp_ID);
+            pstm.setString(3, Emp_ID);
+            ResultSet result = pstm.executeQuery();
+            
+            System.out.println("Position_ID, Position_Title, Salary, Company, Size, Founded");
+            while(result.next())
+            {
+                validList.add(result.getString(1));
+                System.out.print(result.getString(1)+", ");
+                System.out.print(result.getString(2)+", ");
+                System.out.print(result.getInt(3)+", ");
+                System.out.print(result.getString(4)+", ");
+                System.out.print(result.getInt(5)+", ");
+                System.out.println(result.getInt(6));
+            }
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+        
+        
+        System.out.println("Please enter one interested Position_ID.");
+        String Pos_ID = sc.nextLine();
+        
+        if(validList.contains(Pos_ID))
+        {
+            try
+            {
+                String query2 = "INSERT INTO MARKED VALUES (?,?,FALSE)";
+                pstm = con.prepareStatement(query2);
+                pstm.setString(1, Pos_ID);
+                pstm.setString(2, Emp_ID);
+                pstm.executeUpdate();
+                
+            }
+            catch(SQLException e)
+            {
+                System.out.println(e);
+            }
+            
+            System.out.println("Done!");
+            
+        }
+        else
+        {
+            System.out.println("Invalid Input. You cannot mark this position");
+            EmployeeMenu();
+        }
     }
     
     public static void checkAverage()
@@ -496,14 +555,81 @@ public class CSCI3170 {
     
     
     //Employer functions
+
+//    Generate a random alpha numeric string whose length is the number of characters specified.
+//    Characters will be chosen from the set of alpha-numeric characters.
+//    Count is the length of random string to create.
+
+    private static final String ALPHA_NUMERIC_STRING = "abcdefghijklmnopqrstuvwxyz0123456789";
+    public static String randomAlphaNumeric(int count) {
+    StringBuilder builder = new StringBuilder();
+    while (count-- != 0) {
+    int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
+    builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+    }
+    return builder.toString();
+    }
+
+
+
+
+
+
     public static void postPosition()
     {
         //Add code
+        System.out.println("Please enter your ID.");
+        String employer_id = sc.nextLine();
+        employer_id = "'" + employer_id + "'";
+        System.out.println("Please enter the position title.");
+        String pos_title = sc.nextLine();
+        pos_title = "'" + pos_title + "'";
+        System.out.println("Please enter an upper bound of salary.");
+        Integer salary = sc.nextInt();
+        System.out.println("Please enter the required experience(press enter to skip)");
+        Integer experience = sc.nextInt();
+        String pos_id = randomAlphaNumeric(6);
+        pos_id = "'" + pos_id + "'";
+        Boolean status = true;
+
+        String query = "INSERT INTO POSITIONTABLE VALUES("+pos_id+","+ pos_title+","+salary+","+experience+","+employer_id+","+status+")";
+        String quary2 = "SELECT p.POSITION_ID, p.POSITION_TITLE, p.SALARY, p.EXPERIENCE, p.EMPLOYER_ID, p.STATUS FROM POSITIONTABLE p WHERE p.POSITION_ID = " + pos_id + " AND p.EMPLOYER_ID = " + employer_id;
+        try
+        {
+
+//"CREATE TABLE POSITIONTABLE"
+//                    + "(POSITION_ID varchar(6) NOT NULL,"
+//                    + "POSITION_TITLE varchar(30) NOT NULL,"
+//                    + "SALARY integer CHECK (SALARY > -1),"
+//                    + "EXPERIENCE integer CHECK (EXPERIENCE >-1),"
+//                    + "EMPLOYER_ID varchar(6) NOT NULL,"
+//                    + "STATUS boolean,"
+//                    + "PRIMARY KEY (POSITION_ID),"
+//                    + "CONSTRAINT fk_pos_empr FOREIGN KEY (EMPLOYER_ID) REFERENCES EMPLOYER(EMPLOYER_ID) ON DELETE CASCADE"
+//                    + ")"
+
+
+            stm.executeUpdate(query);
+            ResultSet result = stm.executeQuery(quary2);
+            result.next();
+
+            System.out.println("Position added with position ID: " + result.getString("POSITION_ID") +
+                                                    " position title: " + result.getString("POSITION_TITLE") +
+                                                    " upper_salary: " + result.getInt("SALARY") +
+                                                    " experience " + result.getInt("EXPERIENCE") +
+                                                    " status: " + result.getBoolean("STATUS"));
+
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e);
+        }
     }
     
     public static void checkAndInterview()    
     {
         //Add code
+
     }
     
     public static void acceptEmployee()
@@ -537,6 +663,5 @@ public class CSCI3170 {
         }
                 
     }
-    
-   
+
 }
