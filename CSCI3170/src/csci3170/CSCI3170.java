@@ -446,7 +446,42 @@ public class CSCI3170 {
     }
 
     public static void checkAverage() {
-        //Add code
+        System.out.println("Please enter your Employee ID.");
+        String Emp_ID = sc.nextLine();
+
+        
+        String query = "SELECT DATEDIFF(END,START) as Days FROM EMPLOYMENT_HISTORY WHERE Employee_ID = ? AND END != 'NULL'";
+        
+        try 
+        {
+            int count =0;
+            int sum = 0;
+            int average;
+            pstm = con.prepareStatement(query);
+            pstm.setString(1, Emp_ID);
+            ResultSet result = pstm.executeQuery();
+            
+            while(result.next())
+            {
+                count+=1;
+                sum+= result.getInt(1);
+            }
+            
+            if(count < 3)
+            {
+                System.out.println("Less than 3 records.");
+            }
+            else
+            {
+                average = sum/3;
+                System.out.println("Your average working time is: " + average + " days.");
+            }
+            
+        }
+        catch(SQLException e)
+        {
+           System.out.println(e);
+        }
     }
 
 
