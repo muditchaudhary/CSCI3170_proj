@@ -625,11 +625,31 @@ public class CSCI3170 {
             System.out.println(e);
         }
     }
-    
-    public static void checkAndInterview()    
+
+    //This function is for printing the IDs of the positions posted by some employer. It takes the employer_id as an input.
+    //Note that employer_id should be in SQL readable format
+    public static void checkPostedPositions( String employer_id) {
+        String quary1 = "SELECT p.POSITION_ID FROM POSITIONTABLE p WHERE p.EMPLOYER_ID =" + employer_id;
+        try {
+            ResultSet result1 = stm.executeQuery(quary1);
+            System.out.println("The IDs of positions posted by you are:");
+            while (result1.next()) {
+                System.out.println(result1.getString("POSITION_ID"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void checkAndInterview()
     {
         //Add code
 
+        System.out.println("Please enter your ID.");
+        String employer_id = sc.nextLine();
+        employer_id = "'" + employer_id + "'";
+        checkPostedPositions(employer_id);
+        d3dda86afdf59e892805ce10567a594b24148e98
     }
     
     public static void acceptEmployee()
