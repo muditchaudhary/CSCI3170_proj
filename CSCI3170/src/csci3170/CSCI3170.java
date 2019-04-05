@@ -159,6 +159,7 @@ public class CSCI3170 {
     {
         try {
             // Dropping Tables. Keep the same order of statements due to participation constraints
+            stm.executeUpdate("DROP TABLE IF EXISTS INTERVIEW");
             stm.executeUpdate("DROP TABLE IF EXISTS MARKED");
             stm.executeUpdate("DROP TABLE IF EXISTS POSITIONTABLE");
             stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYER");
@@ -222,6 +223,14 @@ public class CSCI3170 {
                     + "EMPLOYEE_ID varchar(6) NOT NULL,"
                     + "STATUS boolean,"
                     + "PRIMARY KEY(POSITION_ID, EMPLOYEE_ID))"
+            );
+
+            //Create Interview records table
+            stm.executeUpdate("CREATE TABLE INTERVIEW"
+                    + "( EMPLOYEE_ID varchar(6) NOT NULL,"
+                    + "EMPLOYER_ID varchar(6) NOT NULL,"
+                    + "POSITION_ID varchar(6) NOT NULL,"
+                    + "PRIMARY KEY(EMPLOYEE_ID, POSITION_ID))"
             );
 
         } catch (SQLException e) {
@@ -323,6 +332,7 @@ public class CSCI3170 {
     public static void deleteTables() {
         try {
             // Dropping Tables. Keep the same order of statements due to participation constraints
+            stm.executeUpdate("DROP TABLE IF EXISTS INTERVIEW");
             stm.executeUpdate("DROP TABLE IF EXISTS MARKED");
             stm.executeUpdate("DROP TABLE IF EXISTS POSITIONTABLE");
             stm.executeUpdate("DROP TABLE IF EXISTS EMPLOYER");
@@ -558,7 +568,7 @@ public class CSCI3170 {
         return count;
     }
 
-    //This function prints the IDs of employees who are interested in the particular position. It takes pos_id as an input
+    //This function prints the info who are interested in the particular position. It takes pos_id as an input
     public static Integer checkInterestedEmployees(String pos_id){
 
             String quary = "SELECT e.Employee_ID, e.Name, e.Expected_Salary, e.Experience, e.Skills FROM MARKED m, EMPLOYEES e WHERE e.Employee_ID = m.EMPLOYEE_ID AND m.POSITION_ID =" + pos_id;
@@ -597,7 +607,49 @@ public class CSCI3170 {
             System.out.println("Please pick one position id.");
             String pos_id = sc.nextLine();
             pos_id = "'" + pos_id + "'";
-            checkInterestedEmployees(pos_id);
+            Integer count2 = checkInterestedEmployees(pos_id);
+            if(count2 > 0){
+
+                System.out.println("Please pick one employee by employee id.");
+                String employee_id = sc.nextLine();
+                employee_id = "'" + employee_id + "'";
+                String quary = "SELECT e.Employee_ID, e.Name, e.Expected_Salary, e.Experience, e.Skills FROM MARKED m, EMPLOYEES e WHERE e.Employee_ID = m.EMPLOYEE_ID AND m.POSITION_ID =" + pos_id + " AND e.Employee_ID=" + employee_id;
+
+                try {
+                    ResultSet result = stm.executeQuery(quary);
+                    String quary2 = "INSERT INTO INTERVIEW VALUES(" + employee_id + "," + employer_id + "," + pos_id + ")";
+
+                    //quary3 is for testing only
+
+                    String quary3 = "SELECT i.EMPLOYEE_ID, I.EMPLOYER_ID, i.POSITION_ID FROM INTERVIEW i WHERE EMPLOYEE_ID = " + employee_id + " AND POSITION_ID = " + pos_id;
+                    try {
+                        stm.executeUpdate(quary2);
+                        result.next();
+                        System.out.println("The interview was done with the following employee: ");
+                        System.out.println("Employee_ID, Name, Expected_Salary, Experience, Skills");
+                        System.out.println(result.getString("Employee_ID") + ", " +
+                                result.getString("Name") + ", " +
+                                result.getString("Expected_Salary") + ", " +
+                                result.getString("Experience") + ", " +
+                                result.getString("Skills"));
+
+                        ResultSet result3 = stm.executeQuery(quary3);
+                        result3.next();
+                        System.out.println("This info was inserted in Interview table: ");
+                        System.out.println("EMPLOYEE_ID: " + result3.getString("EMPLOYEE_ID") +
+                                            " EMPLOYER_ID: " + result3.getString("EMPLOYER_ID") +
+                                            " POSITION_ID: " + result3.getString("POSITION_ID"));
+
+                    } catch (SQLException e) {
+                        System.out.println(e);
+                    }
+
+                }
+
+                catch(SQLException e){
+                      System.out.println(e);
+                }
+            }
 
 //            "CREATE TABLE MARKED"
 //                                +"( POSITION_ID varchar(6) NOT NULL,"
