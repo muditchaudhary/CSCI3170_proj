@@ -53,6 +53,7 @@ public class CSCI3170 {
         else if (userType == 3)
         {
             //Employer Menu
+            EmployerMenu();
         }
         else if (userType == 4)
         {
@@ -496,14 +497,81 @@ public class CSCI3170 {
     
     
     //Employer functions
+
+//    Generate a random alpha numeric string whose length is the number of characters specified.
+//    Characters will be chosen from the set of alpha-numeric characters.
+//    Count is the length of random string to create.
+
+    private static final String ALPHA_NUMERIC_STRING = "abcdefghijklmnopqrstuvwxyz0123456789";
+    public static String randomAlphaNumeric(int count) {
+    StringBuilder builder = new StringBuilder();
+    while (count-- != 0) {
+    int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
+    builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+    }
+    return builder.toString();
+    }
+
+
+
+
+
+
     public static void postPosition()
     {
         //Add code
+        System.out.println("Please enter your ID.");
+        String employer_id = sc.nextLine();
+        employer_id = "'" + employer_id + "'";
+        System.out.println("Please enter the position title.");
+        String pos_title = sc.nextLine();
+        pos_title = "'" + pos_title + "'";
+        System.out.println("Please enter an upper bound of salary.");
+        Integer salary = sc.nextInt();
+        System.out.println("Please enter the required experience(press enter to skip)");
+        Integer experience = sc.nextInt();
+        String pos_id = randomAlphaNumeric(6);
+        pos_id = "'" + pos_id + "'";
+        Boolean status = true;
+
+        String query = "INSERT INTO POSITIONTABLE VALUES("+pos_id+","+ pos_title+","+salary+","+experience+","+employer_id+","+status+")";
+        String quary2 = "SELECT p.POSITION_ID, p.POSITION_TITLE, p.SALARY, p.EXPERIENCE, p.EMPLOYER_ID, p.STATUS FROM POSITIONTABLE p WHERE p.POSITION_ID = " + pos_id + " AND p.EMPLOYER_ID = " + employer_id;
+        try
+        {
+
+//"CREATE TABLE POSITIONTABLE"
+//                    + "(POSITION_ID varchar(6) NOT NULL,"
+//                    + "POSITION_TITLE varchar(30) NOT NULL,"
+//                    + "SALARY integer CHECK (SALARY > -1),"
+//                    + "EXPERIENCE integer CHECK (EXPERIENCE >-1),"
+//                    + "EMPLOYER_ID varchar(6) NOT NULL,"
+//                    + "STATUS boolean,"
+//                    + "PRIMARY KEY (POSITION_ID),"
+//                    + "CONSTRAINT fk_pos_empr FOREIGN KEY (EMPLOYER_ID) REFERENCES EMPLOYER(EMPLOYER_ID) ON DELETE CASCADE"
+//                    + ")"
+
+
+            stm.executeUpdate(query);
+            ResultSet result = stm.executeQuery(quary2);
+            result.next();
+
+            System.out.println("Position added with position ID: " + result.getString("POSITION_ID") +
+                                                    " position title: " + result.getString("POSITION_TITLE") +
+                                                    " upper_salary: " + result.getInt("SALARY") +
+                                                    " experience " + result.getInt("EXPERIENCE") +
+                                                    " status: " + result.getBoolean("STATUS"));
+
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e);
+        }
     }
     
     public static void checkAndInterview()    
     {
         //Add code
+
     }
     
     public static void acceptEmployee()
@@ -537,6 +605,5 @@ public class CSCI3170 {
         }
                 
     }
-    
-   
+
 }
