@@ -594,6 +594,7 @@ public class CSCI3170 {
                                                                                                                                                                                                              
     }
 
+   //This function is for testing only. It shows whether checkAndInterview functionallity is working correctly.
     public static void successInterviewIndicator(String pos_id, String employee_id){
 
         String quary = "SELECT e.Employee_ID, e.Name, e.Expected_Salary, e.Experience, e.Skills FROM MARKED m, EMPLOYEES e WHERE e.Employee_ID = m.EMPLOYEE_ID AND m.POSITION_ID =" + pos_id + " AND e.Employee_ID=" + employee_id;
@@ -611,9 +612,6 @@ public class CSCI3170 {
                     result.getString("Experience") + ", " +
                     result.getString("Skills"));
 
-
-
-
         }
 
         catch(SQLException e){
@@ -621,6 +619,8 @@ public class CSCI3170 {
         }
 
     }
+
+    //This function is for testing only. It shows whether checkAndInterview functionality is working correctly. (It supplements the successInterviewIndicator()).
 
     public static void successInterviewIndicator2(String employee_id, String pos_id) {
 
@@ -678,6 +678,11 @@ public class CSCI3170 {
 
 
             }
+            else
+            {
+                System.out.println("No one is interested in this position.\n");
+                EmployerMenu();
+            }
 
 //            "CREATE TABLE MARKED"
 //                                +"( POSITION_ID varchar(6) NOT NULL,"
@@ -695,13 +700,91 @@ public class CSCI3170 {
 
 
         }
+        else
+        {
+            System.out.println("You haven't posted any position.");
+            EmployerMenu();
+        }
 
     }
+   //This function takes employer_id as an input and returns the Company he/she is from.
+    public static  String employerCompany(String employer_id){
+        String quary = "SELECT e.COMPANY FROM EMPLOYER e WHERE EMPLOYER_ID = " + employer_id;
+        String str = "";
+        try{
+             ResultSet result = stm.executeQuery(quary);
+             result.next();
+             str = result.getString(1);
+        }
+        catch(SQLException e){
+             System.out.println(e);
+        }
+             return str;
+    }
+//
+//       stm.executeUpdate("CREATE TABLE EMPLOYMENT_HISTORY"
+//               + "(EMPLOYEE_ID varchar(6) NOT NULL,"
+//               + "COMPANY varchar(30) NOT NULL,"
+//               + "POSITION_ID varchar(6) NOT NULL,"
+//               + "START DATE,"
+//               + "END DATE NULL,"
+//               + "PRIMARY KEY(POSITION_ID))"
+//       );
+//
 
+    //This function inserts the new row to EMPLOYMENT_HISTORY table
+    public static void insertHistory(String employee_id, String company, String pos_id){
+
+//        String pattern = "yyyy-MM-dd";
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+//
+//        String date = simpleDateFormat.format(new Date());
+//        System.out.println(date);
+        String date = "'" + "1999-01-01" + "'";
+
+        String quary = "INSERT INTO EMPLOYMENT_HISTORY VALUES(" + employee_id + ", " + company + ", " + pos_id + ", "
+                                                                + date + ", "+ null + ")";
+        try
+        {
+          stm.executeUpdate(quary);
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e);
+        }
+
+
+    }
 
     public static void acceptEmployee()
     {
         //Add code
+        System.out.println("Please enter your ID.");
+        String employer_id = sc.nextLine();
+        employer_id = "'" + employer_id + "'";
+        System.out.println("Please enter the  Employer_ID you want to hire.");
+        String employee_id = sc.nextLine();
+        employee_id = "'" + employee_id + "'";
+        String quary = "SELECT POSITION_ID FROM INTERVIEW WHERE EMPLOYER_ID = " + employer_id + " AND EMPLOYEE_ID = " + employee_id;
+        try {
+            ResultSet count = stm.executeQuery(quary);
+            count.next();
+            String pos_id = count.getString(1);
+            if( !pos_id.isEmpty()){
+               String company = "'" + employerCompany(employer_id) + "'";
+               pos_id = "'" + pos_id + "'";
+               insertHistory(employee_id, company, pos_id);
+            }
+            else{
+                System.out.println("You didn't interview the following employee");
+                EmployerMenu();
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e);
+        }
+        
+
     }
     
     //Main function
