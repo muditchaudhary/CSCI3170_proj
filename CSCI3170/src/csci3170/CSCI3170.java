@@ -733,20 +733,20 @@ public class CSCI3170 {
 //
 
     //This function inserts the new row to EMPLOYMENT_HISTORY table
-    public static void insertHistory(String employee_id, String company, String pos_id){
+    public static void insertHistoryAndUpdatePos(String employee_id, String company, String pos_id){
 
-//        String pattern = "yyyy-MM-dd";
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-//
-//        String date = simpleDateFormat.format(new Date());
-//        System.out.println(date);
-        String date = "'" + "1999-01-01" + "'";
+        String quary3 = "INSERT INTO EMPLOYMENT_HISTORY VALUES(" + employee_id + ", " + company + ", " + pos_id + ", "
+                                                                + "CURDATE()" + ", "+ null + ")";
 
-        String quary = "INSERT INTO EMPLOYMENT_HISTORY VALUES(" + employee_id + ", " + company + ", " + pos_id + ", "
-                                                                + date + ", "+ null + ")";
+        String quary2 = " update EMPLOYMENT_HISTORY SET END = CURDATE() WHERE EMPLOYEE_ID =" + employee_id + " and END IS NULL;";
+
+        String quary1 = "UPDATE POSITIONTABLE SET STATUS = (1=1) where POSITION_ID = (SELECT e.POSITION_ID FROM EMPLOYMENT_HISTORY e WHERE EMPLOYEE_ID =" + employee_id + "and END IS NULL);";
+        String quary4 = "UPDATE POSITIONTABLE SET STATUS = (1=0) where POSITION_ID = " + pos_id + ";";
         try
-        {
-          stm.executeUpdate(quary);
+        {   stm.executeUpdate(quary1);
+            stm.executeUpdate(quary2);
+            stm.executeUpdate(quary3);
+            stm.executeUpdate(quary4);
         }
         catch (SQLException e)
         {
@@ -755,6 +755,9 @@ public class CSCI3170 {
 
 
     }
+
+
+
 
     public static void acceptEmployee()
     {
@@ -773,7 +776,7 @@ public class CSCI3170 {
             if( !pos_id.isEmpty()){
                String company = "'" + employerCompany(employer_id) + "'";
                pos_id = "'" + pos_id + "'";
-               insertHistory(employee_id, company, pos_id);
+               insertHistoryAndUpdatePos(employee_id, company, pos_id);
             }
             else{
                 System.out.println("You didn't interview the following employee");
