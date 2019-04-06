@@ -5,12 +5,14 @@
  */
 package csci3170;
 import java.sql.*;
+import java.text.DateFormat;
 import java.util.*;
 import java.io.*;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.OffsetTime;
+import java.time.LocalDate;
 import static java.time.OffsetTime.now;
 import java.util.ArrayList;
 /**
@@ -502,26 +504,66 @@ public class CSCI3170 {
         return builder.toString();
     }
 
+    private static Integer checkEmployerId(String employer_id){
+        String quary = "SELECT COUNT(1) from EMPLOYER WHERE EMPLOYER_ID = " + employer_id;
+        Integer response = 0;
+        try
+        {
+          ResultSet result = stm.executeQuery(quary);
+          result.next();
+          Integer exist = result.getInt(1);
+          if(exist > 0){
+              response = 1;
+          }
+        }
+        catch(SQLException e){
+            System.out.println(e);
+        }
+        return response;
+    }
+
+
+    public static Integer potentialEmployees(String skill, Integer salary, Integer experience){
+        Integer count = 0;
+        String quary = "SELECT Count(*) from EMPLOYEES e where e.Skills like '%" + skill + "%' and e.Experience >= " + experience + " and Expected_Salary <= " + salary + ";";
+        try{
+            ResultSet result = stm.executeQuery(quary);
+            result.next();
+            count = result.getInt(1);
+        }
+         catch(SQLException e){
+            System.out.println(e);
+         }
+        return count;
+    }
 
     public static void postPosition() {
         //Add code
         System.out.println("Please enter your ID.");
         String employer_id = sc.nextLine();
         employer_id = "'" + employer_id + "'";
-        System.out.println("Please enter the position title.");
-        String pos_title = sc.nextLine();
-        pos_title = "'" + pos_title + "'";
-        System.out.println("Please enter an upper bound of salary.");
-        Integer salary = sc.nextInt();
-        System.out.println("Please enter the required experience(press enter to skip)");
-        Integer experience = sc.nextInt();
-        String pos_id = randomAlphaNumeric(6);
-        pos_id = "'" + pos_id + "'";
-        Boolean status = true;
+        Integer exist = checkEmployerId(employer_id);
+        if(exist == 1) {
+            System.out.println("Please enter the position title.");
+            String pos_title = sc.nextLine();
+            String tmp_title = pos_title;
+            pos_title = "'" + pos_title + "'";
+            System.out.println("Please enter an upper bound of salary.");
+            Integer salary = sc.nextInt();
+            sc.nextLine();
+            System.out.println("Please enter the required experience(press enter to skip)");
+            String tmp = sc.nextLine();
+            Integer experience = 0;
+            if(!tmp.equals("")){
+                experience = Integer.parseInt(tmp);
+            }
+            String pos_id = randomAlphaNumeric(3);
+            pos_id = "'" + "pos" + pos_id + "'";
+            Boolean status = true;
 
-        String query = "INSERT INTO POSITIONTABLE VALUES(" + pos_id + "," + pos_title + "," + salary + "," + experience + "," + employer_id + "," + status + ")";
-        String quary2 = "SELECT p.POSITION_ID, p.POSITION_TITLE, p.SALARY, p.EXPERIENCE, p.EMPLOYER_ID, p.STATUS FROM POSITIONTABLE p WHERE p.POSITION_ID = " + pos_id + " AND p.EMPLOYER_ID = " + employer_id;
-        try {
+            String query = "INSERT INTO POSITIONTABLE VALUES(" + pos_id + "," + pos_title + "," + salary + "," + experience + "," + employer_id + "," + status + ")";
+            String quary2 = "SELECT p.POSITION_ID, p.POSITION_TITLE, p.SALARY, p.EXPERIENCE, p.EMPLOYER_ID, p.STATUS FROM POSITIONTABLE p WHERE p.POSITION_ID = " + pos_id + " AND p.EMPLOYER_ID = " + employer_id;
+            try {
 
 //"CREATE TABLE POSITIONTABLE"
 //                    + "(POSITION_ID varchar(6) NOT NULL,"
@@ -535,18 +577,25 @@ public class CSCI3170 {
 //                    + ")"
 
 
-            stm.executeUpdate(query);
-            ResultSet result = stm.executeQuery(quary2);
-            result.next();
+                stm.executeUpdate(query);
+                ResultSet result = stm.executeQuery(quary2);
+                result.next();
 
-            System.out.println("Position added with position ID: " + result.getString("POSITION_ID") +
-                    " position title: " + result.getString("POSITION_TITLE") +
-                    " upper_salary: " + result.getInt("SALARY") +
-                    " experience " + result.getInt("EXPERIENCE") +
-                    " status: " + result.getBoolean("STATUS"));
+                System.out.println("Position added with position ID: " + result.getString("POSITION_ID") +
+                        " position_title: " + result.getString("POSITION_TITLE") +
+                        " upper_salary: " + result.getInt("SALARY") +
+                        " experience " + result.getInt("EXPERIENCE") +
+                        " status: " + result.getBoolean("STATUS"));
+                System.out.println(potentialEmployees(tmp_title, salary, experience) + " potential employees found.\n");
 
-        } catch (SQLException e) {
-            System.out.println(e);
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+
+        }
+        else{
+            System.out.println("The Employer with that ID does not exist. Please enter another ID.");
+            EmployerMenu();
         }
     }
 
@@ -569,6 +618,8 @@ public class CSCI3170 {
     }
 
     //This function prints the info who are interested in the particular position. It takes pos_id as an input
+
+
     public static Integer checkInterestedEmployees(String pos_id){
 
             String quary = "SELECT e.Employee_ID, e.Name, e.Expected_Salary, e.Experience, e.Skills FROM MARKED m, EMPLOYEES e WHERE e.Employee_ID = m.EMPLOYEE_ID AND m.POSITION_ID =" + pos_id;
@@ -735,6 +786,13 @@ public class CSCI3170 {
     //This function inserts the new row to EMPLOYMENT_HISTORY table
     public static void insertHistoryAndUpdatePos(String employee_id, String company, String pos_id){
 
+
+          LocalDate today = LocalDate.now();
+
+
+        
+
+
         String quary3 = "INSERT INTO EMPLOYMENT_HISTORY VALUES(" + employee_id + ", " + company + ", " + pos_id + ", "
                                                                 + "CURDATE()" + ", "+ null + ")";
 
@@ -747,6 +805,9 @@ public class CSCI3170 {
             stm.executeUpdate(quary2);
             stm.executeUpdate(quary3);
             stm.executeUpdate(quary4);
+            System.out.println("An Employment History record is created., details are:");
+            System.out.println("Employee_id, Company, Position_ID, Start, End");
+            System.out.println(employee_id + ", " + company + ", " + pos_id + ", " + today + ", " + "NULL");
         }
         catch (SQLException e)
         {
