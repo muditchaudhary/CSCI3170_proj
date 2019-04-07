@@ -462,7 +462,6 @@ public class CSCI3170 {
             pstm = con.prepareStatement(query);
             pstm.setString(1, Emp_ID);
             ResultSet result = pstm.executeQuery();
-            
             while(result.next())
             {
                 count+=1;
@@ -655,7 +654,7 @@ public class CSCI3170 {
         try{
             ResultSet result = stm.executeQuery(quary);
             result.next();
-            System.out.println("\nThe interview was done with the following employee: \n");
+            System.out.println("\nThe interview was done with the following employee: ");
             System.out.println("Employee_ID, Name, Expected_Salary, Experience, Skills\n");
             System.out.println(result.getString("Employee_ID") + ", " +
                     result.getString("Name") + ", " +
@@ -681,7 +680,7 @@ public class CSCI3170 {
         try {
             ResultSet result3 = stm.executeQuery(quary3);
             result3.next();
-            System.out.println("\nThis info was inserted in Interview table: \n");
+            System.out.println("\nThis info was inserted in Interview table: ");
             System.out.println("EMPLOYEE_ID: " + result3.getString("EMPLOYEE_ID") +
                     " EMPLOYER_ID: " + result3.getString("EMPLOYER_ID") +
                     " POSITION_ID: " + result3.getString("POSITION_ID"));
@@ -691,6 +690,20 @@ public class CSCI3170 {
         }
 
 
+    }
+
+    public static Integer checkExistence(String table_name, String col_name, String id){
+        String quary = "SELECT COUNT(1) from " + table_name + " where " + col_name + " = " + id;
+        Integer count = 0;
+        try{
+            ResultSet result = stm.executeQuery(quary);
+            result.next();
+            count = result.getInt(1);
+        }
+        catch (SQLException e){
+            System.out.println(e);
+        }
+        return count;
     }
 
 
@@ -705,32 +718,36 @@ public class CSCI3170 {
             System.out.println("Please pick one position id.");
             String pos_id = sc.nextLine();
             pos_id = "'" + pos_id + "'";
-            Integer count2 = checkInterestedEmployees(pos_id);
-            if(count2 > 0){
+            int count1 = checkExistence("POSITIONTABLE", "POSITION_ID", pos_id);
+            if (count1 > 0)  {
+                Integer count2 = checkInterestedEmployees(pos_id);
+            if (count2 > 0) {
 
                 System.out.println("Please pick one employee by employee id.");
                 String employee_id = sc.nextLine();
                 employee_id = "'" + employee_id + "'";
+                Integer count3 = checkExistence("EMPLOYEES", "Employee_ID", employee_id);
+                if(count3 > 0) {
 
-                try {
+                    try {
 
-                    String quary2 = "INSERT INTO INTERVIEW VALUES(" + employee_id + "," + employer_id + "," + pos_id + ")";
+                        String quary2 = "INSERT INTO INTERVIEW VALUES(" + employee_id + "," + employer_id + "," + pos_id + ")";
 
-                    //quary3 is for testing only
-                    stm.executeUpdate(quary2);
+                        //quary3 is for testing only
+                        stm.executeUpdate(quary2);
 
+                    } catch (SQLException e) {
+                        System.out.println(e);
+                    }
+                    successInterviewIndicator(pos_id, employee_id);
+                    successInterviewIndicator2(employee_id, pos_id);
+                }
+                else{
+                    System.out.println("That Employee_ID is not on the list.");
+                    EmployerMenu();
                 }
 
-                catch(SQLException e){
-                      System.out.println(e);
-                }
-                successInterviewIndicator(pos_id, employee_id);
-                successInterviewIndicator2(employee_id, pos_id);
-
-
-            }
-            else
-            {
+            } else {
                 System.out.println("No one is interested in this position.\n");
                 EmployerMenu();
             }
@@ -749,7 +766,11 @@ public class CSCI3170 {
 //                               + "PRIMARY KEY (EMPLOYEE_ID)"
 //                               + ")"
 
-
+        }
+            else{
+                System.out.println("That position is not on the list.");
+                EmployerMenu();
+            }
         }
         else
         {
@@ -820,34 +841,45 @@ public class CSCI3170 {
 
 
 
-    public static void acceptEmployee()
-    {
+    public static void acceptEmployee() {
         //Add code
         System.out.println("Please enter your ID.");
         String employer_id = sc.nextLine();
         employer_id = "'" + employer_id + "'";
-        System.out.println("Please enter the  Employer_ID you want to hire.");
-        String employee_id = sc.nextLine();
-        employee_id = "'" + employee_id + "'";
-        String quary = "SELECT POSITION_ID FROM INTERVIEW WHERE EMPLOYER_ID = " + employer_id + " AND EMPLOYEE_ID = " + employee_id;
-        try {
-            ResultSet count = stm.executeQuery(quary);
-            count.next();
-            String pos_id = count.getString(1);
-            if( !pos_id.isEmpty()){
-               String company = "'" + employerCompany(employer_id) + "'";
-               pos_id = "'" + pos_id + "'";
-               insertHistoryAndUpdatePos(employee_id, company, pos_id);
+        Integer count2 = checkExistence("EMPLOYER", "EMPLOYER_ID", employer_id);
+        if (count2 > 0) {
+            System.out.println("Please enter the  Employer_ID you want to hire.");
+            String employee_id = sc.nextLine();
+            employee_id = "'" + employee_id + "'";
+
+            Integer count1 = checkExistence("INTERVIEW", "EMPLOYEE_ID", employee_id);
+            if(count1 > 0) {
+                String quary = "SELECT POSITION_ID FROM INTERVIEW WHERE EMPLOYER_ID = " + employer_id + " AND EMPLOYEE_ID = " + employee_id;
+                try {
+                    ResultSet count = stm.executeQuery(quary);
+                    count.next();
+                    String pos_id = count.getString(1);
+                    if (!pos_id.isEmpty()) {
+                        String company = "'" + employerCompany(employer_id) + "'";
+                        pos_id = "'" + pos_id + "'";
+                        insertHistoryAndUpdatePos(employee_id, company, pos_id);
+                    } else {
+                        System.out.println("You didn't interview the following employee");
+                        EmployerMenu();
+                    }
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
             }
             else{
-                System.out.println("You didn't interview the following employee");
+                System.out.println("You haven't interviewed this Employee yet.");
                 EmployerMenu();
             }
         }
-        catch(SQLException e){
-            System.out.println(e);
+        else{
+            System.out.println("Wrong Employer_ID");
+            EmployerMenu();
         }
-        
 
     }
     
