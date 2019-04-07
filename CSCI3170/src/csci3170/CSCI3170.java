@@ -5,15 +5,9 @@
  */
 package csci3170;
 import java.sql.*;
-import java.text.DateFormat;
 import java.util.*;
 import java.io.*;
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.OffsetTime;
 import java.time.LocalDate;
-import static java.time.OffsetTime.now;
 import java.util.ArrayList;
 /**
  *
@@ -459,10 +453,16 @@ public class CSCI3170 {
             int count =0;
             int sum = 0;
             int average;
+            
             pstm = con.prepareStatement(query);
             pstm.setString(1, Emp_ID);
             ResultSet result = pstm.executeQuery();
-            while(result.next())
+
+
+
+
+            while(result.next() && count < 3)
+
             {
                 count+=1;
                 sum+= result.getInt(1);
