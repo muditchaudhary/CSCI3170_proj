@@ -459,11 +459,12 @@ public class CSCI3170 {
             int count =0;
             int sum = 0;
             int average;
+            
             pstm = con.prepareStatement(query);
             pstm.setString(1, Emp_ID);
             ResultSet result = pstm.executeQuery();
             
-            while(result.next())
+            while(result.next() && count < 3)
             {
                 count+=1;
                 sum+= result.getInt(1);
