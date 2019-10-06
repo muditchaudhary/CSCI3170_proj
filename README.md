@@ -24,7 +24,6 @@ How to check the database on the sql server:
 	8. You can now use the SQL commands to get output of the tables.
 	9. The name of the tables are EMPLOYEES, EMPLOYER, COMPANY, EMPLOYMENT_HISTORY, MARKED, POSITIONTABLE. The table names are Case-sensitive.
 ```
-To run the java program I used netbeans. I'm not sure how it will work with other IDE's. During submission I'll figure out how to give the code.
 
 How to run the Java Program:
 ```	
@@ -33,4 +32,3 @@ How to run the Java Program:
 	3. Build and Run.
 	4. For loading the data you need to enter the file path in the following format: M:\dbProject\CSCI3170_proj\CSCI3170\test_data\
 ```
-I have added the skeleton code. You can write the code for the functions inside the skeleton code.
